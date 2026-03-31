@@ -1,0 +1,113 @@
+{
+  "harshith": {
+    "name": "harshith",
+    "email": "aripelliharshith123@gmail.com",
+    "password": "2ddd9683a02b1a9680bde4cc27376ff56048251fa1eca757bd75b7fe3c57516d",
+    "joined": "11 Mar 2026",
+    "registered_files": [
+      {
+        "file": "BLOCKCHAIN WITH DISTRIBUTEED LEDGER.txt",
+        "type": "human",
+        "hash": "eeda548619ebbe9b...",
+        "date": "11 Mar 2026"
+      },
+      {
+        "file": "IMG20251211103737.jpg",
+        "type": "AI",
+        "hash": "f4f048fded3f0ee6...",
+        "date": "11 Mar 2026"
+      },
+      {
+        "file": "ARIPELLI HARSHITH.docx",
+        "type": "human",
+        "hash": "452c225fd4d93fc6...",
+        "date": "12 Mar 2026"
+      },
+      {
+        "file": "pro1.c++",
+        "type": "human",
+        "hash": "75e850424b39e09204f3487be873e80551ff61d83a1efe2198efff02beb36000",
+        "filename": "pro1.c++",
+        "date": "12 Mar 2026"
+      },
+      {
+        "file": "harshith.HEIC",
+        "type": "human",
+        "hash": "4f63b06bba42d9506864eaf9c21327c5f918188fd3c1104e8010c028c06395d6",
+        "filename": "harshith.HEIC",
+        "date": "12 Mar 2026"
+      },
+      {
+        "file": "Data Engineering Virtual Internship.pdf",
+        "type": "human",
+        "hash": "dbfa63ce78921c0c09b26b8a8b353d21020f304b96a5365dd1f8d16110019f88",
+        "filename": "Data Engineering Virtual Internship.pdf",
+        "date": "15 Mar 2026"
+      },
+      {
+        "file": "WhatsApp Image 2025-07-22 at 12.57.46_6be6bc52.jpg",
+        "type": "AI",
+        "hash": "d7ce2717f1fa3a19a3a6e7c6ea2c9f3e06c311efa63b33b224489555a123f2cf",
+        "filename": "WhatsApp Image 2025-07-22 at 12.57.46_6be6bc52.jpg",
+        "date": "16 Mar 2026"
+      },
+      {
+        "file": "WhatsApp Image 2025-07-22 at 12.57.46_6be6bc52.jpg",
+        "type": "human",
+        "hash": "66d78bdab8c72a377b2ec13aa5375c856c0205d70e2b7c7c3eb5fbe41d6e42dc",
+        "filename": "WhatsApp Image 2025-07-22 at 12.57.46_6be6bc52.jpg",
+        "date": "16 Mar 2026"
+      },
+      {
+        "file": "0.jpeg",
+        "type": "AI",
+        "hash": "96c871ec98ccf877f87fcedbe1e900325014c29736ef232d5777a71bffeedc8e",
+        "filename": "0.jpeg",
+        "date": "18 Mar 2026"
+      },
+      {
+        "file": "WhatsApp Image 2026-03-11 at 6.49.07 PM.jpeg",
+        "type": "AI",
+        "hash": "4522c12e859c184358491a3b83c099c7756b6eb52d2dc3162bc4d26788836911",
+        "filename": "WhatsApp Image 2026-03-11 at 6.49.07 PM.jpeg",
+        "date": "31 Mar 2026"
+      }
+    ]
+  },
+  "nithin reddy": {
+    "name": "nithin",
+    "email": "nithinreddy202006@gmail.com",
+    "password": "0e1311d2c0037d70b8ea3fb0e8f59151b97550d64255453f497c03319cf6a350",
+    "joined": "11 Mar 2026",
+    "registered_files": [
+      {
+        "file": "AD BT-(19).pptx",
+        "type": "human",
+        "hash": "b8b8da8949b33dfc...",
+        "date": "11 Mar 2026"
+      }
+    ]
+  },
+  "siri": {
+    "name": "Siri",
+    "email": "sridevi.kallepalli8@gmail.com",
+    "password": "fe01f72aa7437d1b7b72a9dce3038b4a7d0e548f53301d7f0029504c2795a874",
+    "joined": "12 Mar 2026",
+    "registered_files": [
+      {
+        "file": "IMG_20221129_210436 (1).jpg",
+        "type": "AI",
+        "hash": "efa520bc285e90c77ef6a937559998fb5ae2aea4d17e7e59289b0690a885b2b7",
+        "filename": "IMG_20221129_210436 (1).jpg",
+        "date": "16 Mar 2026"
+      }
+    ]
+  },
+  "mallareddy": {
+    "name": "mallareddy",
+    "email": "harshitharipelli2006@gmail.com",
+    "password": "188826d1fa4f4c91d66eb338be924b12cc8753589c232248bf2555315a730636",
+    "joined": "15 Mar 2026",
+    "registered_files": []
+  }
+}

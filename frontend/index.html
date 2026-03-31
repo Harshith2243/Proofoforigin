@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ProofOfOrigin — AI Authenticity on Blockchain</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "primary": "#137fec",
+          "background-dark": "#101922",
+          "surface": "#1a232e",
+          "surface2": "#283039",
+        },
+        fontFamily: {
+          "display": ["Space Grotesk", "sans-serif"],
+          "body": ["Noto Sans", "sans-serif"],
+        },
+        boxShadow: {
+          'neon': '0 0 10px rgba(19,127,236,0.4), 0 0 20px rgba(19,127,236,0.15)',
+        }
+      }
+    }
+  }
+</script>
+<style>
+  * { -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Space Grotesk', sans-serif; min-height: 100dvh; }
+  .glass-blue { background: rgba(19,127,236,0.06); backdrop-filter: blur(12px); border: 1px solid rgba(19,127,236,0.2); }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .page { display: none; width: 100%; min-height: 100%; flex-direction: column; }
+  .page.active { display: flex; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse-dot { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  @keyframes countUp { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
+  .fade-in { animation: fadeIn 0.4s ease both; }
+  .spin { animation: spin 0.7s linear infinite; }
+  .pulse-dot { animation: pulse-dot 1.5s ease infinite; }
+  .count-animate { animation: countUp 0.5s ease both; }
+  .hash-text { font-family: 'Noto Sans', monospace; font-size: 0.68rem; word-break: break-all; line-height: 1.7; }
+  .nav-btn.active { color: #137fec; }
+  .nav-btn.active .nav-icon { font-variation-settings: 'FILL' 1; }
+  .upload-zone { border: 2px dashed rgba(255,255,255,0.12); transition: all 0.25s; cursor: pointer; }
+  .upload-zone:hover, .upload-zone.dragover { border-color: #137fec; background: rgba(19,127,236,0.05); }
+  input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7a99' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; }
+  .stat-loading { opacity: 0.4; }
+  @keyframes confettiFall {
+    0%   { transform: translateY(0) rotate(0deg);   opacity:1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity:0; }
+  }
+</style>
+</head>
+<body class="bg-background-dark text-white overflow-hidden">
+
+<div class="relative flex flex-col h-screen w-full bg-[#0d1218]">
+  <div class="pointer-events-none absolute left-0 top-0 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-[100px]"></div>
+  <div class="pointer-events-none absolute bottom-0 right-0 h-64 w-64 translate-x-1/3 translate-y-1/3 rounded-full bg-blue-500/10 blur-[80px]"></div>
+
+  <main class="relative z-10 flex-1 flex flex-col overflow-y-auto">
+
+    <!-- LOGIN -->
+    <div id="page-login" class="page active flex-col items-center justify-center h-full w-full overflow-y-auto fade-in" style="background: radial-gradient(ellipse at 60% 0%, rgba(19,127,236,0.18) 0%, transparent 60%), radial-gradient(ellipse at 0% 100%, rgba(99,102,241,0.12) 0%, transparent 60%), #0d1218;">
+
+      <div class="w-full max-w-sm px-6 flex flex-col gap-5 py-8">
+
+        <!-- Logo -->
+        <div class="flex flex-col items-center gap-3 mb-2">
+          <div class="size-16 rounded-2xl bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center shadow-neon">
+            <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings:'FILL' 1;">shield_person</span>
+          </div>
+          <div class="text-center">
+            <h1 class="text-2xl font-bold tracking-tight text-white">ProofOfOrigin</h1>
+            <p class="text-slate-400 text-xs mt-1 tracking-widest uppercase">Blockchain Content Authentication</p>
+          </div>
+        </div>
+
+        <!-- Card -->
+        <div class="rounded-2xl border border-white/8 bg-surface/60 backdrop-blur-md p-6 flex flex-col gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white">Sign In</h2>
+            <p class="text-slate-400 text-xs mt-0.5">Enter your credentials to access the system</p>
+          </div>
+
+          <!-- Username -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-slate-400 text-xs font-bold uppercase tracking-wider">Username</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">person</span>
+              <input id="login-username" type="text" placeholder="Enter username"
+                class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-12 pl-11 pr-4 text-white text-sm outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 transition-all"
+                onkeydown="if(event.key==='Enter') document.getElementById('login-password').focus()"/>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-slate-400 text-xs font-bold uppercase tracking-wider">Password</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">lock</span>
+              <input id="login-password" type="password" placeholder="Enter password"
+                class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-12 pl-11 pr-11 text-white text-sm outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 transition-all"
+                onkeydown="if(event.key==='Enter') attemptLogin()"/>
+              <button onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors">
+                <span class="material-symbols-outlined text-lg" id="pw-eye">visibility</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Error -->
+          <div id="login-error" class="hidden rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 flex items-center gap-2">
+            <span class="material-symbols-outlined text-red-400 text-base">error</span>
+            <p id="login-error-msg" class="text-red-400 text-xs font-bold">Invalid username or password.</p>
+          </div>
+
+          <!-- Login button -->
+          <button onclick="attemptLogin()" id="login-btn"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-12 bg-primary text-white font-bold text-sm shadow-neon transition-all active:scale-[0.97] hover:bg-primary/90 mt-1">
+            <span class="material-symbols-outlined text-lg" id="login-btn-icon">lock_open</span>
+            <span id="login-btn-text">Sign In</span>
+          </button>
+        </div>
+
+        <!-- Create account link -->
+        <button onclick="goTo('signup')" class="text-slate-400 text-xs text-center hover:text-white transition-colors">
+          Don't have an account? <span class="text-primary font-bold">Create Account</span>
+        </button>
+
+        <!-- Chain badges -->
+        <div class="flex justify-center gap-3 pb-2">
+          <div class="flex items-center gap-2 rounded-full border border-white/8 px-3 py-1.5">
+            <span class="h-1.5 w-1.5 rounded-full bg-green-500 shadow-[0_0_6px_rgba(34,197,94,0.8)]"></span>
+            <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Sepolia Testnet</span>
+          </div>
+          <div class="flex items-center gap-2 rounded-full border border-white/8 px-3 py-1.5">
+            <span class="material-symbols-outlined text-primary text-xs">lock</span>
+            <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">SHA-256</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div id="page-signup" class="page flex-col items-center justify-center h-full w-full overflow-y-auto fade-in" style="background: radial-gradient(ellipse at 60% 0%, rgba(19,127,236,0.18) 0%, transparent 60%), #0d1218;">
+      <div class="w-full max-w-sm px-6 flex flex-col gap-4 py-8">
+        <div class="flex flex-col items-center gap-2 mb-2">
+          <div class="size-14 rounded-2xl bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center shadow-neon">
+            <span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings:'FILL' 1;">person_add</span>
+          </div>
+          <h1 class="text-xl font-bold text-white">Create Account</h1>
+          <p class="text-slate-400 text-xs">Join ProofOfOrigin — it's free!</p>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-surface/60 p-5 flex flex-col gap-3">
+          <!-- Full Name -->
+          <div class="flex flex-col gap-1">
+            <label class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Full Name</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">badge</span>
+              <input id="su-name" type="text" placeholder="Your full name"
+                class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-11 pl-10 pr-3 text-white text-sm outline-none focus:border-primary/60 transition-all"/>
+            </div>
+          </div>
+          <!-- Username -->
+          <div class="flex flex-col gap-1">
+            <label class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Username</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">alternate_email</span>
+              <input id="su-username" type="text" placeholder="Choose a username"
+                class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-11 pl-10 pr-3 text-white text-sm outline-none focus:border-primary/60 transition-all"/>
+            </div>
+          </div>
+          <!-- Gmail -->
+          <div class="flex flex-col gap-1">
+            <label class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Gmail Address</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">mail</span>
+              <input id="su-email" type="email" placeholder="yourname@gmail.com"
+                class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-11 pl-10 pr-3 text-white text-sm outline-none focus:border-primary/60 transition-all"/>
+            </div>
+          </div>
+          <!-- Password -->
+          <div class="flex flex-col gap-1">
+            <label class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Password</label>
+            <div class="relative">
+              <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">lock</span>
+              <input id="su-password" type="password" placeholder="Min 6 characters"
+                class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-11 pl-10 pr-10 text-white text-sm outline-none focus:border-primary/60 transition-all"/>
+              <button onclick="togglePw('su-password','su-eye')" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+                <span class="material-symbols-outlined text-base" id="su-eye">visibility</span>
+              </button>
+            </div>
+            <!-- Password strength -->
+            <div class="flex gap-1 mt-1" id="pw-strength-bars">
+              <div class="h-1 flex-1 rounded bg-white/10" id="bar1"></div>
+              <div class="h-1 flex-1 rounded bg-white/10" id="bar2"></div>
+              <div class="h-1 flex-1 rounded bg-white/10" id="bar3"></div>
+              <div class="h-1 flex-1 rounded bg-white/10" id="bar4"></div>
+            </div>
+            <p class="text-[10px] text-slate-500" id="pw-strength-label"></p>
+          </div>
+          <!-- Error -->
+          <div id="su-error" class="hidden rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 flex items-center gap-2">
+            <span class="material-symbols-outlined text-red-400 text-sm">error</span>
+            <p id="su-error-msg" class="text-red-400 text-xs font-bold"></p>
+          </div>
+          <!-- Submit -->
+          <button onclick="doSignup()" id="su-btn"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-12 bg-primary text-white font-bold text-sm shadow-neon transition-all active:scale-[0.97] mt-1">
+            <span class="material-symbols-outlined text-base" id="su-btn-icon">person_add</span>
+            <span id="su-btn-text">Create Account</span>
+          </button>
+        </div>
+        <button onclick="goTo('login')" class="text-slate-400 text-xs text-center hover:text-white transition-colors">
+          Already have an account? <span class="text-primary font-bold">Sign In</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- OTP VERIFY -->
+    <div id="page-otp" class="page flex-col items-center justify-center h-full w-full fade-in" style="background: radial-gradient(ellipse at 60% 0%, rgba(19,127,236,0.18) 0%, transparent 60%), #0d1218;">
+      <div class="w-full max-w-sm px-6 flex flex-col gap-5">
+        <div class="flex flex-col items-center gap-3">
+          <div class="size-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-700 flex items-center justify-center shadow-[0_0_20px_rgba(34,197,94,0.4)]">
+            <span class="material-symbols-outlined text-white text-3xl" style="font-variation-settings:'FILL' 1;">mark_email_read</span>
+          </div>
+          <div class="text-center">
+            <h2 class="text-xl font-bold text-white">Verify Your Email</h2>
+            <p class="text-slate-400 text-xs mt-1">OTP sent to <span class="text-primary font-bold" id="otp-email-display">your Gmail</span></p>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/8 bg-surface/60 p-5 flex flex-col gap-4">
+          <p class="text-slate-400 text-xs text-center">Enter the 6-digit code from your Gmail inbox</p>
+          <!-- 6 OTP boxes -->
+          <div class="flex gap-2 justify-center" id="otp-boxes">
+            <input type="text" maxlength="1" class="otp-input w-11 h-14 bg-[#0d1218] border-2 border-white/10 rounded-xl text-white text-xl font-bold text-center outline-none focus:border-primary transition-all" oninput="otpInput(this,0)" onkeydown="otpKey(event,0)"/>
+            <input type="text" maxlength="1" class="otp-input w-11 h-14 bg-[#0d1218] border-2 border-white/10 rounded-xl text-white text-xl font-bold text-center outline-none focus:border-primary transition-all" oninput="otpInput(this,1)" onkeydown="otpKey(event,1)"/>
+            <input type="text" maxlength="1" class="otp-input w-11 h-14 bg-[#0d1218] border-2 border-white/10 rounded-xl text-white text-xl font-bold text-center outline-none focus:border-primary transition-all" oninput="otpInput(this,2)" onkeydown="otpKey(event,2)"/>
+            <input type="text" maxlength="1" class="otp-input w-11 h-14 bg-[#0d1218] border-2 border-white/10 rounded-xl text-white text-xl font-bold text-center outline-none focus:border-primary transition-all" oninput="otpInput(this,3)" onkeydown="otpKey(event,3)"/>
+            <input type="text" maxlength="1" class="otp-input w-11 h-14 bg-[#0d1218] border-2 border-white/10 rounded-xl text-white text-xl font-bold text-center outline-none focus:border-primary transition-all" oninput="otpInput(this,4)" onkeydown="otpKey(event,4)"/>
+            <input type="text" maxlength="1" class="otp-input w-11 h-14 bg-[#0d1218] border-2 border-white/10 rounded-xl text-white text-xl font-bold text-center outline-none focus:border-primary transition-all" oninput="otpInput(this,5)" onkeydown="otpKey(event,5)"/>
+          </div>
+          <!-- Timer -->
+          <div class="flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined text-amber-400 text-base">timer</span>
+            <p class="text-amber-400 text-xs font-bold" id="otp-timer">Expires in 5:00</p>
+          </div>
+          <!-- Error -->
+          <div id="otp-error" class="hidden rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2">
+            <p id="otp-error-msg" class="text-red-400 text-xs font-bold text-center"></p>
+          </div>
+          <!-- Verify button -->
+          <button onclick="verifyOtp()" id="otp-btn"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-12 bg-primary text-white font-bold text-sm shadow-neon transition-all active:scale-[0.97]">
+            <span class="material-symbols-outlined text-base" id="otp-btn-icon">verified</span>
+            <span id="otp-btn-text">Verify OTP</span>
+          </button>
+          <button onclick="resendOtp()" class="text-slate-400 text-xs text-center hover:text-primary transition-colors">
+            Didn't receive OTP? <span class="text-primary font-bold">Resend</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPLASH -->
+    <div id="page-splash" class="page flex-col items-center justify-between h-full w-full px-6 pb-16 pt-12 fade-in">
+      <header class="flex items-center justify-center w-full">
+        <span class="material-symbols-outlined text-primary text-4xl" style="font-variation-settings:'FILL' 1;">shield_person</span>
+      </header>
+      <main class="flex flex-col items-center w-full">
+        <div class="glass-blue p-10 rounded-2xl w-full max-w-sm text-center shadow-2xl">
+          <h1 class="text-white tracking-tight text-4xl font-bold leading-none pb-4">ProofOfOrigin</h1>
+          <div class="h-1 w-12 bg-primary mx-auto mb-6 rounded-full shadow-neon"></div>
+          <p class="text-gray-300 text-base font-normal leading-relaxed">Authenticating Human Creativity in the AI Era.</p>
+          <div class="mt-4 flex items-center justify-center gap-2 text-primary/80 text-xs font-bold tracking-widest uppercase">
+            <span class="material-symbols-outlined text-sm">verified</span>
+            Blockchain Secured
+          </div>
+        </div>
+      </main>
+      <footer class="flex flex-col items-center gap-5 w-full max-w-sm">
+        <div class="flex flex-col items-center gap-1 opacity-50">
+          <span class="material-symbols-outlined animate-bounce text-sm">expand_less</span>
+          <p class="text-[10px] uppercase tracking-[0.3em]">System Initialized</p>
+        </div>
+        <button onclick="goTo('dashboard')" class="flex w-full items-center justify-center gap-2 rounded-xl h-14 bg-primary text-white text-base font-bold transition-all active:scale-[0.97] shadow-neon">
+          Enter Dashboard <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+        <p class="text-[10px] text-gray-500 text-center">ProofOfOrigin Protocol · BCT Alpha Batch 19</p>
+      </footer>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="page-dashboard" class="page flex-col h-full w-full overflow-y-auto pb-24"  >
+      <nav class="sticky top-0 z-30 bg-[#0d1218]/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-white/5">
+        <div class="flex items-center gap-3">
+          <div class="size-9 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+            <span class="text-primary text-sm font-bold" id="dash-avatar">?</span>
+          </div>
+          <div>
+            <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Welcome back!</p>
+            <h2 class="text-sm font-bold" id="dash-username">User</h2>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Logout button -->
+          <button onclick="logout()" class="size-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-red-500/20 transition-all" title="Logout">
+            <span class="material-symbols-outlined text-slate-400 hover:text-red-400 text-lg">logout</span>
+          </button>
+          <!-- Refresh stats button -->
+          <button onclick="loadStats()" id="refresh-btn" class="size-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10 transition-all" title="Refresh counts">
+            <span class="material-symbols-outlined text-slate-400 text-lg" id="refresh-icon" style="display:inline-block;">refresh</span>
+          </button>
+          <div class="flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1">
+            <span class="h-2 w-2 pulse-dot rounded-full bg-primary"></span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-primary">Live</span>
+          </div>
+        </div>
+      </nav>
+
+      <div class="flex flex-col gap-5 p-4 ">
+        <!-- Network Status -->
+        <div class="flex items-center justify-between gap-3 rounded-xl border border-white/5 bg-surface/50 p-4 max-w-sm">
+          <div class="flex items-center gap-3">
+            <div class="size-9 rounded-lg bg-green-500/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-green-400 text-lg">sensors</span>
+            </div>
+            <div>
+              <p class="text-white text-sm font-bold">Network: Optimal</p>
+              <p class="text-slate-400 text-xs">Sepolia Testnet · SHA-256</p>
+            </div>
+          </div>
+          <span class="flex h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]"></span>
+        </div>
+
+        <!-- Stats Grid -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">My Registrations</p>
+            <div class="flex items-center gap-2 max-w-sm">
+              <p class="text-slate-500 text-[10px]" id="stats-status">Loading from chain...</p>
+              <button onclick="loadStats()" class="size-6 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10">
+                <span class="material-symbols-outlined text-slate-400 text-sm" id="refresh-icon" style="display:inline-block;">refresh</span>
+              </button>   
+            </div>
+          </div>
+          <!-- Stat cards -->
+        <div class="grid grid-cols-3 gap-3 mb-3 max-w-xs">  
+            <div class="flex flex-col gap-2 rounded-xl border border-white/5 bg-surface p-4">
+              <span class="material-symbols-outlined text-green-400 text-xl" style="font-variation-settings:'FILL' 1;">person_check</span>
+              <p class="text-2xl font-bold text-white stat-loading" id="stat-human">—</p>
+              <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wide">Human</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-xl border border-white/5 bg-surface p-4">
+              <span class="material-symbols-outlined text-purple-400 text-xl" style="font-variation-settings:'FILL' 1;">smart_toy</span>
+              <p class="text-2xl font-bold text-white stat-loading" id="stat-ai">—</p>
+              <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wide">AI</p>
+            </div>
+            <div class="flex flex-col gap-2 rounded-xl border border-white/5 bg-surface p-4">
+              <span class="material-symbols-outlined text-amber-400 text-xl" style="font-variation-settings:'FILL' 1;">token</span>
+              <p class="text-2xl font-bold text-white stat-loading" id="stat-total">—</p>
+              <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wide">Total</p>
+            </div>
+          </div>
+          <!-- Pie chart bar -->
+          <div class="rounded-xl border border-white/5 bg-surface p-4  max-w-sm">
+            <div class="flex items-center justify-between mb-2">
+              <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">My Human vs AI Ratio</p>
+              <p class="text-slate-500 text-[10px]" id="pie-percent">—</p>
+            </div>
+            <div class="w-full h-3 rounded-full bg-white/5 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-green-500 to-green-400 transition-all duration-700" id="pie-bar" style="width:0%"></div>
+            </div>
+            <div class="flex justify-between mt-2">
+              <div class="flex items-center gap-1">
+                <span class="h-2 w-2 rounded-full bg-green-400"></span>
+                <span class="text-slate-400 text-[10px]">Human</span>
+              </div>
+              <div class="flex items-center gap-1">
+                <span class="h-2 w-2 rounded-full bg-purple-400"></span>
+                <span class="text-slate-400 text-[10px]">AI Generated</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Register CTA -->
+         <div class = "max-w-sm"> 
+        <button onclick="goTo('register'); setNav('register')" class="flex w-full items-center justify-center gap-3 rounded-xl h-14 px-6 bg-primary text-white text-base font-bold shadow-neon transition-all active:scale-[0.97]">
+          <span class="material-symbols-outlined">add_to_photos</span>
+          Register New Content
+        </button></div>
+
+        <!-- Recent Activity -->
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-white text-base font-bold">Recent Activity</h3>
+          </div>
+          <div id="activity-feed">
+            <div class="flex items-center justify-center py-8 text-slate-500 text-sm">
+              <span class="material-symbols-outlined mr-2 text-lg">history</span>
+              No activity yet. Register your first asset!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="page-register" class="page flex-col h-full w-full overflow-y-auto pb-24">
+      <nav class="sticky top-0 z-30 bg-[#0d1218]/80 backdrop-blur-md px-4 py-4 flex items-center gap-3 border-b border-white/5">
+        <button onclick="goTo('dashboard'); setNav('dashboard')" class="size-9 rounded-lg bg-white/5 flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-lg">arrow_back</span>
+        </button>
+        <h2 class="text-base font-bold">Register Content</h2>
+      </nav>
+
+      <div class="flex flex-col gap-5 p-4">
+
+        <!-- Step Indicator -->
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2" id="step-indicator-1">
+            <div class="flex size-7 items-center justify-center rounded-full bg-primary text-white text-xs font-bold" id="step-dot-1">1</div>
+            <span class="text-white text-xs font-bold" id="step-label-1">Generate Hash</span>
+          </div>
+          <div class="flex-1 h-px bg-white/10 mx-1" id="step-line"></div>
+          <div class="flex items-center gap-2 opacity-40" id="step-indicator-2">
+            <div class="flex size-7 items-center justify-center rounded-full bg-white/10 text-white text-xs font-bold" id="step-dot-2">2</div>
+            <span class="text-slate-400 text-xs font-bold" id="step-label-2">Store on Blockchain</span>
+          </div>
+        </div>
+
+        <!-- ══ STEP 1 — Upload & Generate Hash ══ -->
+        <div id="step1-section">
+          <!-- Info banner -->
+          <div class="glass-blue rounded-xl p-3 flex items-start gap-3 mb-4">
+            <span class="material-symbols-outlined text-primary text-lg mt-0.5" style="font-variation-settings:'FILL' 1;">info</span>
+            <p class="text-slate-300 text-xs leading-relaxed">Upload your file — our <strong class="text-white">AI automatically detects</strong> if it's human or AI-generated. No blockchain transaction yet!</p>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <!-- Upload Zone -->
+            <div>
+              <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Upload File</p>
+              <div class="upload-zone relative rounded-xl p-8 text-center" id="reg-zone">
+                <input type="file" id="reg-file" onchange="handleFileSelect('reg-file','reg-filename','reg-zone')"/>
+                <span class="material-symbols-outlined text-4xl text-slate-500 mb-3 block" id="reg-zone-icon">upload_file</span>
+                <p class="text-white font-medium text-sm" id="reg-zone-text">Tap to upload or drag & drop</p>
+                <p class="text-slate-500 text-xs mt-1">Any file — text, image, PDF, video</p>
+                <p class="text-primary text-xs font-bold mt-2 hidden" id="reg-filename"></p>
+              </div>
+            </div>
+
+            <!-- Creator Name -->
+            <div>
+              <label class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 block">Creator Name</label>
+              <div class="relative">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 text-lg">person</span>
+                <input id="reg-creator" type="text" placeholder="Auto-filled from your account"
+                  class="w-full bg-surface/50 border border-white/5 rounded-xl h-12 pl-11 pr-4 text-white text-sm outline-none cursor-not-allowed opacity-80"
+                  readonly/>
+              </div>
+            </div>
+
+            <!-- AI Detection Result — auto filled after hash generation -->
+            <div id="ai-detection-box" class="hidden rounded-xl border border-white/10 bg-surface/50 p-4">
+              <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-3">AI Detection Result</p>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <div class="size-10 rounded-lg flex items-center justify-center" id="ai-detect-icon-bg">
+                    <span class="material-symbols-outlined text-xl" id="ai-detect-icon">smart_toy</span>
+                  </div>
+                  <div>
+                    <p class="text-white font-bold text-sm" id="ai-detect-label">Detecting...</p>
+                    <p class="text-slate-400 text-xs" id="ai-detect-reason">Analyzing content...</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-white font-bold text-lg" id="ai-detect-confidence">—</p>
+                  <p class="text-slate-500 text-[10px]">confidence</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Generate Hash Button -->
+            <button id="gen-btn" onclick="generateHashPreview()"
+              class="flex w-full items-center justify-center gap-2 rounded-xl h-14 bg-surface border border-primary/40 text-primary font-bold text-base transition-all active:scale-[0.97] hover:bg-primary/10">
+              <span class="material-symbols-outlined" id="gen-btn-icon">fingerprint</span>
+              <span id="gen-btn-text">Generate Hash Preview</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ══ STEP 2 — Hash Preview + Confirm ══ -->
+        <div id="step2-section" class="hidden flex-col gap-4">
+
+          <!-- Hash Preview Card -->
+          <div class="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="flex h-2 w-2 rounded-full bg-primary shadow-neon"></span>
+              <p class="text-primary text-xs font-bold uppercase tracking-wider">Hash Generated Successfully</p>
+            </div>
+            <div class="flex flex-col gap-2">
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">File</span>
+                <span class="text-white text-xs font-medium truncate max-w-[180px]" id="preview-filename">—</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Creator</span>
+                <span class="text-white text-xs font-medium" id="preview-creator">—</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Detected Type</span>
+                <span class="text-xs font-bold px-2 py-0.5 rounded" id="preview-type">—</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">Confidence</span>
+                <span class="text-white text-xs font-medium" id="preview-confidence">—</span>
+              </div>
+              <div class="flex justify-between items-center py-1.5 border-b border-white/5">
+                <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">File Size</span>
+                <span class="text-white text-xs font-medium" id="preview-size">—</span>
+              </div>
+            </div>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-3 mb-1">SHA-256 Fingerprint</p>
+            <p class="hash-text text-primary/90 bg-black/40 rounded-lg px-3 py-2" id="preview-hash">—</p>
+          </div>
+
+          <!-- Similarity Warning — shown only if visually similar image found -->
+          <div id="similarity-warning" class="hidden rounded-xl border border-red-500/30 bg-red-500/8 p-4 flex flex-col gap-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-red-400 text-xl" style="font-variation-settings:'FILL' 1;">content_copy</span>
+              <p class="text-red-300 font-bold text-sm">⚠️ Similar Image Already Registered!</p>
+            </div>
+            <p class="text-slate-400 text-xs leading-relaxed">Our system detected that a <strong class="text-white">visually similar image</strong> is already on the blockchain. This could be the same image with filters, cropping, or color changes applied.</p>
+            <div class="rounded-lg bg-black/30 p-3 flex flex-col gap-2">
+              <div class="flex justify-between items-center">
+                <span class="text-slate-500 text-[10px] font-bold uppercase">Original Owner</span>
+                <span class="text-white text-xs font-bold" id="sim-creator">—</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-500 text-[10px] font-bold uppercase">Original File</span>
+                <span class="text-white text-xs" id="sim-filename">—</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-500 text-[10px] font-bold uppercase">Registered On</span>
+                <span class="text-white text-xs" id="sim-date">—</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-slate-500 text-[10px] font-bold uppercase">Visual Similarity</span>
+                <span class="text-red-400 text-xs font-bold" id="sim-percent">—</span><span class="text-red-400 text-xs font-bold">%</span>
+              </div>
+              <p class="text-slate-600 text-[10px] font-mono mt-1" id="sim-orig-hash">—</p>
+            </div>
+            <div class="rounded-lg border border-red-500/20 bg-red-500/10 p-2 text-center">
+              <p class="text-red-400 text-[10px] font-bold">⛔ Registering a modified version of someone's original work may violate ownership rights!</p>
+            </div>
+            <button onclick="resetRegister()"
+              class="flex w-full items-center justify-center gap-2 rounded-xl h-11 bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold transition-all hover:bg-red-500/30">
+              <span class="material-symbols-outlined text-sm">arrow_back</span>
+              Go Back & Use Original File
+            </button>
+          </div>
+
+          <!-- Normal Warning -->
+          <div class="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 flex items-start gap-3">
+            <span class="material-symbols-outlined text-amber-400 text-lg mt-0.5" style="font-variation-settings:'FILL' 1;">warning</span>
+            <p class="text-amber-200/80 text-xs leading-relaxed">Once stored on blockchain this <strong class="text-amber-300">cannot be changed or deleted</strong>. Verify all details before confirming!</p>
+          </div>
+
+          <!-- Action Buttons -->
+          <button id="reg-btn" onclick="registerContent()"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-14 bg-primary text-white font-bold text-base shadow-neon transition-all active:scale-[0.97]">
+            <span class="material-symbols-outlined" id="reg-btn-icon">link</span>
+            <span id="reg-btn-text">Confirm & Store on Blockchain</span>
+          </button>
+
+          <button onclick="resetRegister()"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-11 bg-white/5 border border-white/10 text-slate-400 font-bold text-sm transition-all active:scale-[0.97] hover:bg-white/10">
+            <span class="material-symbols-outlined text-lg">restart_alt</span>
+            Start Over / Change File
+          </button>
+
+          <div id="reg-result" class="hidden rounded-xl border p-4 fade-in"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- VERIFY -->
+    <div id="page-verify" class="page flex-col h-full w-full overflow-y-auto pb-24">
+      <nav class="sticky top-0 z-30 bg-[#0d1218]/80 backdrop-blur-md px-4 py-4 flex items-center gap-3 border-b border-white/5">
+        <button onclick="goTo('dashboard'); setNav('dashboard')" class="size-9 rounded-lg bg-white/5 flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-lg">arrow_back</span>
+        </button>
+        <h2 class="text-base font-bold">Verify Content</h2>
+      </nav>
+      <div class="flex flex-col gap-4 p-4">
+
+        <!-- Method Tabs -->
+        <div class="flex gap-2 rounded-xl bg-surface/50 p-1">
+          <button id="tab-file" onclick="switchVerifyTab('file')"
+            class="flex-1 flex items-center justify-center gap-2 rounded-lg h-10 text-xs font-bold bg-primary text-white transition-all">
+            <span class="material-symbols-outlined text-sm">upload_file</span> Upload File
+          </button>
+          <button id="tab-hash" onclick="switchVerifyTab('hash')"
+            class="flex-1 flex items-center justify-center gap-2 rounded-lg h-10 text-xs font-bold text-slate-400 transition-all">
+            <span class="material-symbols-outlined text-sm">tag</span> Enter Hash
+          </button>
+        </div>
+
+        <!-- Info banner -->
+        <div class="glass-blue rounded-xl p-3 flex items-start gap-3">
+          <span class="material-symbols-outlined text-primary text-lg mt-0.5" style="font-variation-settings:'FILL' 1;">info</span>
+          <p class="text-slate-300 text-xs leading-relaxed">Upload the <strong class="text-white">exact same file</strong> you registered — even 1 byte change creates a different hash. Or paste the SHA-256 hash directly.</p>
+        </div>
+
+        <!-- TAB 1: File Upload -->
+        <div id="verify-tab-file" class="flex flex-col gap-4">
+          <div>
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2">Upload File to Verify</p>
+            <div class="upload-zone relative rounded-xl p-8 text-center" id="ver-zone">
+              <input type="file" id="ver-file" onchange="handleFileSelect('ver-file','ver-filename','ver-zone')"/>
+              <span class="material-symbols-outlined text-4xl text-slate-500 mb-3 block">search</span>
+              <p class="text-white font-medium text-sm">Tap to upload file</p>
+              <p class="text-slate-500 text-xs mt-1">Must be the EXACT same file you registered</p>
+              <p class="text-primary text-xs font-bold mt-2 hidden" id="ver-filename"></p>
+            </div>
+          </div>
+          <button id="ver-btn" onclick="verifyContent()"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-14 bg-primary text-white font-bold text-base shadow-neon transition-all active:scale-[0.97]">
+            <span class="material-symbols-outlined" id="ver-btn-icon">verified</span>
+            <span id="ver-btn-text">Check on Blockchain</span>
+          </button>
+        </div>
+
+        <!-- TAB 2: Hash Input -->
+        <div id="verify-tab-hash" class="hidden flex-col gap-4">
+          <div class="flex flex-col gap-2">
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">Paste SHA-256 Hash</p>
+            <p class="text-slate-500 text-[10px]">Copy the hash from your registration result or certificate</p>
+            <textarea id="ver-hash-input" rows="3" placeholder="e.g. 9c43ee639c16fa5f682f8b4a0d5493e8..."
+              class="w-full bg-[#0d1218] border border-white/10 rounded-xl p-3 text-primary text-xs font-mono outline-none focus:border-primary/60 transition-all resize-none"></textarea>
+          </div>
+
+          <!-- My registered hashes — quick select -->
+          <div id="my-hashes-section" class="hidden">
+            <p class="text-slate-400 text-[10px] font-bold uppercase tracking-wider mb-2">My Registered Files — Quick Select</p>
+            <div id="my-hashes-list" class="flex flex-col gap-2"></div>
+          </div>
+
+          <button onclick="verifyByHash()"
+            class="flex w-full items-center justify-center gap-2 rounded-xl h-14 bg-primary text-white font-bold text-base shadow-neon transition-all active:scale-[0.97]">
+            <span class="material-symbols-outlined" id="hash-btn-icon">verified</span>
+            <span id="hash-btn-text">Verify Hash</span>
+          </button>
+        </div>
+
+        <!-- Result -->
+        <div id="ver-result" class="hidden rounded-xl border p-4 fade-in"></div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div id="page-howto" class="page flex-col h-full w-full overflow-y-auto pb-24">
+      <nav class="sticky top-0 z-30 bg-[#0d1218]/80 backdrop-blur-md px-4 py-4 flex items-center border-b border-white/5">
+        <h2 class="text-base font-bold">How It Works</h2>
+      </nav>
+      <div class="flex flex-col gap-4 p-4">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-surface to-[#0d1218] border border-white/5 p-5">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-2xl rounded-full -translate-y-1/2 translate-x-1/2"></div>
+          <p class="text-xs font-bold text-primary uppercase tracking-widest mb-2">System Architecture</p>
+          <h2 class="text-xl font-bold text-white mb-1">ProofOfOrigin Protocol</h2>
+          <p class="text-slate-400 text-xs leading-relaxed">Blockchain-based content authenticity combining SHA-256 hashing, smart contracts, and AI classification.</p>
+        </div>
+        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider">The Process</p>
+        <div class="flex flex-col gap-3">
+          <div class="flex items-start gap-4 rounded-xl border border-white/5 bg-surface/50 p-4">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+              <span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings:'FILL' 1;">upload_file</span>
+            </div>
+            <div><p class="text-white font-bold text-sm mb-1">01 · Upload Content</p><p class="text-slate-400 text-xs leading-relaxed">Upload any digital file — text, image, audio, video, or document.</p></div>
+          </div>
+          <div class="flex items-start gap-4 rounded-xl border border-white/5 bg-surface/50 p-4">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <span class="material-symbols-outlined text-purple-400 text-xl" style="font-variation-settings:'FILL' 1;">fingerprint</span>
+            </div>
+            <div><p class="text-white font-bold text-sm mb-1">02 · SHA-256 Hash Generated</p><p class="text-slate-400 text-xs leading-relaxed">A unique 256-bit fingerprint is computed. Even one character change = completely different hash.</p><p class="hash-text text-primary/60 bg-black/30 rounded-lg px-3 py-2 mt-2">9c43ee639c16debbc767703441f0bb56...</p></div>
+          </div>
+          <div class="flex items-start gap-4 rounded-xl border border-white/5 bg-surface/50 p-4">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <span class="material-symbols-outlined text-amber-400 text-xl" style="font-variation-settings:'FILL' 1;">smart_toy</span>
+            </div>
+            <div><p class="text-white font-bold text-sm mb-1">03 · AI Classification</p><p class="text-slate-400 text-xs leading-relaxed">AI model determines whether content is human-created or AI-generated.</p></div>
+          </div>
+          <div class="flex items-start gap-4 rounded-xl border border-white/5 bg-surface/50 p-4">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-green-500/10 border border-green-500/20">
+              <span class="material-symbols-outlined text-green-400 text-xl" style="font-variation-settings:'FILL' 1;">link</span>
+            </div>
+            <div><p class="text-white font-bold text-sm mb-1">04 · Stored on Blockchain</p><p class="text-slate-400 text-xs leading-relaxed">Hash + creator + timestamp written permanently to Ethereum Sepolia via smart contract. Immutable forever.</p></div>
+          </div>
+          <div class="flex items-start gap-4 rounded-xl border border-white/5 bg-surface/50 p-4">
+            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 border border-primary/20">
+              <span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings:'FILL' 1;">verified</span>
+            </div>
+            <div><p class="text-white font-bold text-sm mb-1">05 · Verified Anytime</p><p class="text-slate-400 text-xs leading-relaxed">Anyone can verify authenticity — decentralized, trustless, transparent.</p></div>
+          </div>
+        </div>
+        <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mt-2">Technology Stack</p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-white/5 bg-surface/50 p-3 flex items-center gap-3"><span class="material-symbols-outlined text-primary text-lg">hub</span><div><p class="text-white text-xs font-bold">Ethereum</p><p class="text-slate-500 text-[10px]">Blockchain Layer</p></div></div>
+          <div class="rounded-xl border border-white/5 bg-surface/50 p-3 flex items-center gap-3"><span class="material-symbols-outlined text-purple-400 text-lg">code</span><div><p class="text-white text-xs font-bold">Solidity</p><p class="text-slate-500 text-[10px]">Smart Contract</p></div></div>
+          <div class="rounded-xl border border-white/5 bg-surface/50 p-3 flex items-center gap-3"><span class="material-symbols-outlined text-amber-400 text-lg">lock</span><div><p class="text-white text-xs font-bold">SHA-256</p><p class="text-slate-500 text-[10px]">Hash Algorithm</p></div></div>
+          <div class="rounded-xl border border-white/5 bg-surface/50 p-3 flex items-center gap-3"><span class="material-symbols-outlined text-green-400 text-lg">psychology</span><div><p class="text-white text-xs font-bold">AI Module</p><p class="text-slate-500 text-[10px]">Origin Detection</p></div></div>
+          <div class="rounded-xl border border-white/5 bg-surface/50 p-3 flex items-center gap-3"><span class="material-symbols-outlined text-blue-400 text-lg">water_drop</span><div><p class="text-white text-xs font-bold">Flask</p><p class="text-slate-500 text-[10px]">Backend API</p></div></div>
+          <div class="rounded-xl border border-white/5 bg-surface/50 p-3 flex items-center gap-3"><span class="material-symbols-outlined text-pink-400 text-lg">web</span><div><p class="text-white text-xs font-bold">Web3.py</p><p class="text-slate-500 text-[10px]">Chain Interface</p></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="page-profile" class="page flex-col h-full w-full overflow-y-auto pb-24">
+      <nav class="sticky top-0 z-30 bg-[#0d1218]/80 backdrop-blur-md px-4 py-4 flex items-center gap-3 border-b border-white/5">
+        <button onclick="goTo('dashboard'); setNav('dashboard')" class="size-9 rounded-lg bg-white/5 flex items-center justify-center">
+          <span class="material-symbols-outlined text-white text-lg">arrow_back</span>
+        </button>
+        <h2 class="text-base font-bold">My Profile</h2>
+      </nav>
+      <div class="flex flex-col gap-4 p-4">
+        <!-- Avatar card -->
+        <div class="rounded-2xl border border-white/8 bg-surface/50 p-5 flex items-center gap-4">
+          <div class="size-16 rounded-2xl bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center shadow-neon flex-shrink-0">
+            <span class="text-white text-2xl font-bold" id="profile-avatar">H</span>
+          </div>
+          <div class="flex-1">
+            <p class="text-white font-bold text-lg" id="profile-name">—</p>
+            <p class="text-slate-400 text-xs" id="profile-email">—</p>
+            <div class="flex items-center gap-1 mt-1">
+              <span class="material-symbols-outlined text-primary text-xs">calendar_today</span>
+              <p class="text-slate-500 text-[10px]">Joined <span id="profile-joined">—</span></p>
+            </div>
+          </div>
+        </div>
+        <!-- Stats row -->
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-white/8 bg-surface/50 p-4 text-center">
+            <p class="text-3xl font-bold text-primary" id="profile-total">—</p>
+            <p class="text-slate-400 text-xs mt-1">Files Registered</p>
+          </div>
+          <div class="rounded-xl border border-white/8 bg-surface/50 p-4 text-center">
+            <p class="text-3xl font-bold text-green-400" id="profile-days">—</p>
+            <p class="text-slate-400 text-xs mt-1">Days Active</p>
+          </div>
+        </div>
+        <!-- Recent registrations -->
+        <div>
+          <p class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-3">Recent Registrations</p>
+          <div id="profile-recent" class="flex flex-col gap-2">
+            <div class="rounded-xl border border-white/5 bg-surface/30 p-4 text-center">
+              <span class="material-symbols-outlined text-slate-600 text-2xl">history</span>
+              <p class="text-slate-500 text-xs mt-1">Loading...</p>
+            </div>
+          </div>
+        </div>
+        <!-- Change password -->
+        <div class="rounded-2xl border border-white/8 bg-surface/50 p-5 flex flex-col gap-3">
+          <p class="text-white font-bold text-sm">Change Password</p>
+          <div class="relative">
+            <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-base">lock</span>
+            <input id="cp-new" type="password" placeholder="New password"
+              class="w-full bg-[#0d1218] border border-white/10 rounded-xl h-11 pl-10 pr-3 text-white text-sm outline-none focus:border-primary/60 transition-all"/>
+          </div>
+          <button onclick="changePassword()"
+            class="flex items-center justify-center gap-2 rounded-xl h-11 bg-white/5 border border-white/10 text-white font-bold text-sm transition-all hover:bg-primary/20">
+            <span class="material-symbols-outlined text-base">lock_reset</span>
+            Update Password
+          </button>
+        </div>
+        <!-- Logout -->
+        <button onclick="logout()"
+          class="flex w-full items-center justify-center gap-2 rounded-xl h-12 bg-red-500/10 border border-red-500/20 text-red-400 font-bold text-sm transition-all hover:bg-red-500/20">
+          <span class="material-symbols-outlined text-base">logout</span>
+          Sign Out
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav id="bottom-nav" class="hidden relative z-50 bg-[#0d1218]/90 backdrop-blur-xl border-t border-white/5 pt-3 pb-6 px-6 flex justify-between items-center">
+    <button id="nav-dashboard" class="nav-btn active flex flex-col items-center gap-1" onclick="goTo('dashboard'); setNav('dashboard')">
+      <span class="material-symbols-outlined nav-icon text-2xl">home</span>
+      <span class="text-[10px] font-bold">Home</span>
+    </button>
+    <button id="nav-register" class="nav-btn flex flex-col items-center gap-1 text-slate-400" onclick="goTo('register'); setNav('register')">
+      <span class="material-symbols-outlined nav-icon text-2xl">add_to_photos</span>
+      <span class="text-[10px] font-bold">Register</span>
+    </button>
+    <button id="nav-verify" class="nav-btn flex flex-col items-center gap-1 text-slate-400" onclick="goTo('verify'); setNav('verify')">
+      <span class="material-symbols-outlined nav-icon text-2xl">verified</span>
+      <span class="text-[10px] font-bold">Verify</span>
+    </button>
+    <button id="nav-howto" class="nav-btn flex flex-col items-center gap-1 text-slate-400" onclick="goTo('howto'); setNav('howto')">
+      <span class="material-symbols-outlined nav-icon text-2xl">info</span>
+      <span class="text-[10px] font-bold">How It Works</span>
+    </button>
+    <button id="nav-profile" class="nav-btn flex flex-col items-center gap-1 text-slate-400" onclick="goTo('profile'); setNav('profile'); loadProfile()">
+      <span class="material-symbols-outlined nav-icon text-2xl">account_circle</span>
+      <span class="text-[10px] font-bold">Profile</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+const API = 'http://127.0.0.1:5000';
+let activityLog  = [];
+let sessionStats = { human: 0, ai: 0 };
+
+// Reset per-user session data on login — full clean reset!
+function resetUserSession() {
+  activityLog  = [];
+  sessionStats = { human: 0, ai: 0 };
+  // Clear stat display immediately to 0
+  ['stat-human','stat-ai','stat-total'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = '0'; el.classList.remove('stat-loading'); }
+  });
+  const pie = document.getElementById('pie-bar');
+  if (pie) pie.style.width = '0%';
+  const pct = document.getElementById('pie-percent');
+  if (pct) pct.textContent = '—';
+  loadActivityFromStorage();
+}
+let currentUser  = { name:'', username:'', email:'', joined:'' };
+let otpContext   = '';   // 'login' or 'signup'
+let otpEmail     = '';
+let otpTimer     = null;
+
+// ── PASSWORD SHOW/HIDE ────────────────────────────────────
+function togglePw(inputId, eyeId) {
+  const inp = document.getElementById(inputId);
+  const eye = document.getElementById(eyeId);
+  inp.type  = inp.type === 'password' ? 'text' : 'password';
+  eye.textContent = inp.type === 'password' ? 'visibility' : 'visibility_off';
+}
+function togglePassword() { togglePw('login-password','pw-eye'); }
+
+// ── PASSWORD STRENGTH ─────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const pwInput = document.getElementById('su-password');
+  if (pwInput) pwInput.addEventListener('input', checkPwStrength);
+
+  // Check if already logged in this session
+  const saved = sessionStorage.getItem('poo-user');
+  if (saved) {
+    // Already logged in — go to dashboard directly
+    currentUser = JSON.parse(saved);
+    updateUserUI();
+    loadActivityFromStorage();  // load THIS user's activity
+    goTo('dashboard');
+    setNav('dashboard');
+  } else {
+    // Not logged in — show login page
+    goTo('login');
+  }
+});
+
+function checkPwStrength() {
+  const pw  = document.getElementById('su-password').value;
+  const bars = ['bar1','bar2','bar3','bar4'];
+  const colors = { 1:'bg-red-500', 2:'bg-orange-500', 3:'bg-yellow-500', 4:'bg-green-500' };
+  const labels = { 0:'', 1:'Weak', 2:'Fair', 3:'Good', 4:'Strong' };
+  let score = 0;
+  if (pw.length >= 6)  score++;
+  if (pw.length >= 10) score++;
+  if (/[A-Z]/.test(pw) && /[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  bars.forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.className = 'h-1 flex-1 rounded ' + (i < score ? colors[score] : 'bg-white/10');
+  });
+  document.getElementById('pw-strength-label').textContent = labels[score];
+}
+
+// ── OTP BOXES ─────────────────────────────────────────────
+function otpInput(el, idx) {
+  el.value = el.value.replace(/[^0-9]/g,'');
+  const boxes = document.querySelectorAll('.otp-input');
+  if (el.value && idx < 5) boxes[idx+1].focus();
+  if (getOtpValue().length === 6) verifyOtp();
+}
+function otpKey(e, idx) {
+  const boxes = document.querySelectorAll('.otp-input');
+  if (e.key === 'Backspace' && !boxes[idx].value && idx > 0) boxes[idx-1].focus();
+}
+function getOtpValue() {
+  return [...document.querySelectorAll('.otp-input')].map(b=>b.value).join('');
+}
+function clearOtpBoxes() {
+  document.querySelectorAll('.otp-input').forEach(b => b.value = '');
+  document.querySelectorAll('.otp-input')[0].focus();
+}
+
+function startOtpTimer() {
+  if (otpTimer) clearInterval(otpTimer);
+  let secs = 300;
+  const el = document.getElementById('otp-timer');
+  otpTimer = setInterval(() => {
+    secs--;
+    const m = Math.floor(secs/60), s = secs%60;
+    if (el) el.textContent = `Expires in ${m}:${s.toString().padStart(2,'0')}`;
+    if (secs <= 0) {
+      clearInterval(otpTimer);
+      if (el) el.textContent = 'OTP expired!';
+    }
+  }, 1000);
+}
+
+// ── LOGIN ─────────────────────────────────────────────────
+async function attemptLogin() {
+  const username = document.getElementById('login-username').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+  const errEl    = document.getElementById('login-error');
+  const errMsg   = document.getElementById('login-error-msg');
+
+  if (!username || !password) {
+    errMsg.textContent = 'Please enter username and password.';
+    errEl.classList.remove('hidden'); return;
+  }
+
+  setLoading('login-btn','login-btn-icon','login-btn-text',true,'Signing in...','lock_open');
+
+  try {
+    const res  = await fetch(`${API}/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      errEl.classList.add('hidden');
+      otpContext = 'login';
+      otpEmail   = data.email;
+      currentUser = { name: data.name, username, email: data.email };
+      document.getElementById('otp-email-display').textContent = data.email;
+      clearOtpBoxes();
+      document.getElementById('otp-error').classList.add('hidden');
+      startOtpTimer();
+      goTo('otp');
+    } else {
+      errMsg.textContent = data.message || 'Invalid credentials!';
+      errEl.classList.remove('hidden');
+      document.getElementById('login-password').value = '';
+    }
+  } catch(e) {
+    errMsg.textContent = 'Cannot connect to backend. Is app.py running?';
+    errEl.classList.remove('hidden');
+  }
+  setLoading('login-btn','login-btn-icon','login-btn-text',false,'Sign In','lock_open');
+}
+
+// ── SIGNUP ────────────────────────────────────────────────
+async function doSignup() {
+  const name     = document.getElementById('su-name').value.trim();
+  const username = document.getElementById('su-username').value.trim().toLowerCase();
+  const email    = document.getElementById('su-email').value.trim().toLowerCase();
+  const password = document.getElementById('su-password').value;
+  const errEl    = document.getElementById('su-error');
+  const errMsg   = document.getElementById('su-error-msg');
+
+  if (!name || !username || !email || !password) {
+    errMsg.textContent = 'All fields are required!';
+    errEl.classList.remove('hidden'); return;
+  }
+  if (!email.includes('@gmail.com')) {
+    errMsg.textContent = 'Please use a Gmail address!';
+    errEl.classList.remove('hidden'); return;
+  }
+  if (password.length < 6) {
+    errMsg.textContent = 'Password must be at least 6 characters!';
+    errEl.classList.remove('hidden'); return;
+  }
+
+  setLoading('su-btn','su-btn-icon','su-btn-text',true,'Sending OTP...','person_add');
+
+  try {
+    const res  = await fetch(`${API}/signup`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name, username, email, password })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      errEl.classList.add('hidden');
+      otpContext = 'signup';
+      otpEmail   = email;
+      document.getElementById('otp-email-display').textContent = email;
+      clearOtpBoxes();
+      document.getElementById('otp-error').classList.add('hidden');
+      startOtpTimer();
+      goTo('otp');
+    } else {
+      errMsg.textContent = data.message;
+      errEl.classList.remove('hidden');
+    }
+  } catch(e) {
+    errMsg.textContent = 'Cannot connect to backend. Is app.py running?';
+    errEl.classList.remove('hidden');
+  }
+  setLoading('su-btn','su-btn-icon','su-btn-text',false,'Create Account','person_add');
+}
+
+// ── OTP VERIFY ────────────────────────────────────────────
+async function verifyOtp() {
+  const otp   = getOtpValue();
+  const errEl = document.getElementById('otp-error');
+  const errMsg= document.getElementById('otp-error-msg');
+
+  if (otp.length < 6) {
+    errMsg.textContent = 'Enter all 6 digits!';
+    errEl.classList.remove('hidden'); return;
+  }
+
+  setLoading('otp-btn','otp-btn-icon','otp-btn-text',true,'Verifying...','verified');
+
+  try {
+    const endpoint = otpContext === 'signup' ? '/verify-signup-otp' : '/verify-login-otp';
+    const res  = await fetch(`${API}${endpoint}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email: otpEmail, otp })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      clearInterval(otpTimer);
+      errEl.classList.add('hidden');
+      if (otpContext === 'signup') {
+        // Account created — go to login
+        goTo('login');
+        showToast('Account created! Please sign in. ✅');
+      } else {
+        // Logged in!
+        currentUser = { name: data.name, username: data.username,
+                        email: data.email, joined: data.joined };
+        sessionStorage.setItem('poo-user', JSON.stringify(currentUser));
+        updateUserUI();
+        resetUserSession();  // load THIS user's activity only
+        goTo('splash');
+      }
+    } else {
+      errMsg.textContent = data.message;
+      errEl.classList.remove('hidden');
+      clearOtpBoxes();
+    }
+  } catch(e) {
+    errMsg.textContent = 'Connection error!';
+    errEl.classList.remove('hidden');
+  }
+  setLoading('otp-btn','otp-btn-icon','otp-btn-text',false,'Verify OTP','verified');
+}
+
+async function resendOtp() {
+  if (otpContext === 'login') {
+    const username = document.getElementById('login-username').value.trim();
+    const password = document.getElementById('login-password').value;
+    await fetch(`${API}/login`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+  }
+  clearOtpBoxes();
+  startOtpTimer();
+  showToast('OTP resent! Check your Gmail. 📧');
+}
+
+function updateUserUI() {
+  // Update dashboard name
+  const nameEl   = document.getElementById('dash-username');
+  const avatarEl = document.getElementById('dash-avatar');
+  if (nameEl)   nameEl.textContent   = currentUser.name || 'User';
+  if (avatarEl) avatarEl.textContent = (currentUser.name || 'U').charAt(0).toUpperCase();
+}
+
+// ── PROFILE ───────────────────────────────────────────────
+async function loadProfile() {
+  if (!currentUser.username) return;
+  document.getElementById('profile-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+  document.getElementById('profile-name').textContent   = currentUser.name;
+  document.getElementById('profile-email').textContent  = currentUser.email;
+  document.getElementById('profile-joined').textContent = currentUser.joined || '—';
+
+  // Days active
+  if (currentUser.joined) {
+    const joined = new Date(currentUser.joined);
+    const days   = Math.floor((new Date() - joined) / 86400000);
+    document.getElementById('profile-days').textContent = isNaN(days) ? '1' : Math.max(1,days);
+  }
+
+  try {
+    const res  = await fetch(`${API}/profile/${currentUser.username}`);
+    const data = await res.json();
+    if (data.success) {
+      document.getElementById('profile-total').textContent = data.total_registered;
+      const recEl = document.getElementById('profile-recent');
+      if (data.recent && data.recent.length > 0) {
+        recEl.innerHTML = data.recent.reverse().map(r => `
+          <div class="flex items-center gap-3 rounded-xl border border-white/5 bg-surface/30 p-3">
+            <div class="size-8 rounded-lg flex items-center justify-center ${r.type==='AI' ? 'bg-purple-500/20' : 'bg-green-500/20'}">
+              <span class="material-symbols-outlined text-sm ${r.type==='AI' ? 'text-purple-400' : 'text-green-400'}">${r.type==='AI' ? 'smart_toy' : 'person_check'}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-white text-xs font-bold truncate">${r.hash}</p>
+              <p class="text-slate-500 text-[10px]">${r.date}</p>
+            </div>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded ${r.type==='AI' ? 'bg-purple-500/20 text-purple-400' : 'bg-green-500/20 text-green-400'}">${r.type}</span>
+          </div>`).join('');
+      } else {
+        recEl.innerHTML = '<div class="text-center p-4"><span class="material-symbols-outlined text-slate-600 text-2xl">history</span><p class="text-slate-500 text-xs mt-1">No registrations yet</p></div>';
+      }
+    }
+  } catch(e) {
+    document.getElementById('profile-total').textContent = '—';
+  }
+}
+
+async function changePassword() {
+  const newPw = document.getElementById('cp-new').value.trim();
+  if (!newPw || newPw.length < 6) { showToast('Password must be 6+ chars! ⚠️'); return; }
+  showToast('Password updated! ✅');
+  document.getElementById('cp-new').value = '';
+}
+
+// ── LOGOUT ────────────────────────────────────────────────
+function logout() {
+  sessionStorage.removeItem('poo-user');
+  currentUser = { name:'', username:'', email:'', joined:'' };
+  document.getElementById('login-username').value = '';
+  document.getElementById('login-password').value = '';
+  document.getElementById('login-error').classList.add('hidden');
+  goTo('login');
+}
+ 
+// ── TOAST NOTIFICATION ────────────────────────────────────
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'fixed top-4 left-1/2 -translate-x-1/2 z-[999] bg-surface border border-white/10 text-white text-xs font-bold px-4 py-3 rounded-xl shadow-xl fade-in';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById('page-' + page);
+  if (!target) return;
+  target.classList.add('active');
+  target.classList.remove('fade-in');
+  void target.offsetWidth;
+  target.classList.add('fade-in');
+  const nav = document.getElementById('bottom-nav');
+  const hiddenPages = ['splash','login','otp','signup'];
+  if (hiddenPages.includes(page)) { nav.classList.add('hidden'); nav.classList.remove('flex'); }
+  else { nav.classList.remove('hidden'); nav.classList.add('flex'); }
+  if (page === 'dashboard') loadStats();
+  // Auto-fill creator name from logged-in user — cannot be changed!
+  if (page === 'register') {
+    const creatorEl = document.getElementById('reg-creator');
+    if (creatorEl && currentUser.name) creatorEl.value = currentUser.name;
+  }
+}
+
+function setNav(page) {
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    b.classList.remove('active'); b.classList.add('text-slate-400');
+  });
+  const btn = document.getElementById('nav-' + page);
+  if (btn) { btn.classList.add('active'); btn.classList.remove('text-slate-400'); }
+}
+
+// ── STATS ─────────────────────────────────────────────────
+async function loadStats() {
+  const statusEl    = document.getElementById('stats-status');
+  const refreshIcon = document.getElementById('refresh-icon');
+  if (refreshIcon) refreshIcon.classList.add('spin');
+  if (statusEl)    { statusEl.textContent = 'Loading your stats...'; statusEl.style.color = ''; }
+
+  ['stat-human','stat-ai','stat-total'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = '—'; el.classList.add('stat-loading'); }
+  });
+
+  try {
+    // ✅ Use per-user stats — only show THIS user's registrations
+    const username = currentUser.username || 'guest';
+    const res      = await fetch(`${API}/stats/${username}`);
+    const data     = await res.json();
+
+    animateStat('stat-human', data.human);
+    animateStat('stat-ai',    data.ai);
+    animateStat('stat-total', data.total);
+    updatePieChart(data.human, data.ai);
+
+    // Update session stats to match
+    sessionStats.human = data.human;
+    sessionStats.ai    = data.ai;
+
+    if (statusEl) {
+      statusEl.textContent = data.total === 0
+        ? 'No registrations yet'
+        : `Your registrations · Sepolia ✓`;
+      statusEl.style.color = '#22c55e';
+    }
+
+  } catch(e) {
+    // Fallback to session counts
+    animateStat('stat-human', sessionStats.human);
+    animateStat('stat-ai',    sessionStats.ai);
+    animateStat('stat-total', sessionStats.human + sessionStats.ai);
+    updatePieChart(sessionStats.human, sessionStats.ai);
+    if (statusEl) {
+      statusEl.textContent = 'Session count only';
+      statusEl.style.color = '#f59e0b';
+    }
+  }
+
+  if (refreshIcon) refreshIcon.classList.remove('spin');
+}
+
+function animateStat(id, value) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.remove('stat-loading','count-animate');
+  void el.offsetWidth;
+  el.textContent = value;
+  el.classList.add('count-animate');
+}
+
+function updatePieChart(human, ai) {
+  const total   = human + ai;
+  const bar     = document.getElementById('pie-bar');
+  const percent = document.getElementById('pie-percent');
+  if (!bar || !percent) return;
+  if (total === 0) {
+    bar.style.width = '0%';
+    percent.textContent = 'No data yet';
+    return;
+  }
+  const humanPct = Math.round((human / total) * 100);
+  const aiPct    = 100 - humanPct;
+  bar.style.width = humanPct + '%';
+  percent.textContent = humanPct + '% Human · ' + aiPct + '% AI';
+}
+
+// ── CONFETTI ──────────────────────────────────────────────
+function launchConfetti() {
+  const colors = ['#137fec','#22c55e','#a855f7','#f59e0b','#ec4899'];
+  for (let i = 0; i < 80; i++) {
+    const el       = document.createElement('div');
+    el.style.cssText= `
+      position:fixed; top:-10px;
+      left:${Math.random()*100}vw;
+      width:${6+Math.random()*6}px;
+      height:${6+Math.random()*6}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+      pointer-events:none; z-index:9999;
+      animation: confettiFall ${1.5+Math.random()*2}s ease forwards;
+      animation-delay:${Math.random()*0.5}s;
+    `;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+// ── FILE HANDLING ─────────────────────────────────────────
+function handleFileSelect(inputId, nameId, zoneId) {
+  const file = document.getElementById(inputId).files[0];
+  if (!file) return;
+  const nameEl = document.getElementById(nameId);
+  const zoneEl = document.getElementById(zoneId);
+  nameEl.textContent = `📄 ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+  nameEl.classList.remove('hidden');
+  zoneEl.style.borderColor = '#137fec';
+}
+
+// ── REGISTER — STEP 1 ─────────────────────────────────────
+let pendingHash = null;
+
+async function generateHashPreview() {
+  const file    = document.getElementById('reg-file').files[0];
+  // Always use logged-in user's name — auto fill if empty
+  const creatorEl = document.getElementById('reg-creator');
+  if (creatorEl && !creatorEl.value && currentUser.name) {
+    creatorEl.value = currentUser.name;
+  }
+  const creator = currentUser.name || creatorEl.value.trim();
+  if (!file)    return showTempError('⚠ Please select a file first.');
+  if (!creator) return showTempError('⚠ Please login first!');
+  setLoading('gen-btn','gen-btn-icon','gen-btn-text',true,'Generating Hash...','fingerprint');
+  try {
+    const fd = new FormData(); fd.append('file', file);
+    const res  = await fetch(`${API}/hash`, { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.hash) {
+      const detectedType = data.type || 'human';
+      const confidence   = data.confidence || 0;
+      pendingHash = { file, creator, type: detectedType, hash: data.hash };
+      const detBox = document.getElementById('ai-detection-box');
+      detBox.classList.remove('hidden');
+      const isAI = detectedType === 'AI';
+      document.getElementById('ai-detect-icon-bg').className = 'size-10 rounded-lg flex items-center justify-center ' + (isAI ? 'bg-purple-500/20' : 'bg-green-500/20');
+      document.getElementById('ai-detect-icon').className    = 'material-symbols-outlined text-xl ' + (isAI ? 'text-purple-400' : 'text-green-400');
+      document.getElementById('ai-detect-icon').textContent  = isAI ? 'smart_toy' : 'person_check';
+      document.getElementById('ai-detect-label').textContent = isAI ? '🤖 AI Generated' : '👤 Human Created';
+      document.getElementById('ai-detect-reason').textContent= data.reason;
+      document.getElementById('ai-detect-confidence').textContent = confidence + '%';
+      document.getElementById('preview-filename').textContent   = file.name;
+      document.getElementById('preview-creator').textContent    = creator;
+      document.getElementById('preview-size').textContent       = (file.size/1024).toFixed(2) + ' KB';
+      document.getElementById('preview-hash').textContent       = data.hash;
+      document.getElementById('preview-confidence').textContent = confidence + '%';
+      const typeEl = document.getElementById('preview-type');
+      typeEl.textContent = isAI ? '🤖 AI Generated' : '👤 Human Created';
+      typeEl.className   = 'text-xs font-bold px-2 py-0.5 rounded ' + (isAI ? 'bg-purple-500/20 text-purple-400' : 'bg-green-500/20 text-green-400');
+
+      // ── Show similarity warning if visually similar image found ──
+      const simBox  = document.getElementById('similarity-warning');
+      const regBtn  = document.getElementById('reg-btn');
+      if (data.similar_found && simBox) {
+        simBox.classList.remove('hidden');
+        document.getElementById('sim-creator').textContent    = data.similar_creator  || '—';
+        document.getElementById('sim-date').textContent       = data.similar_date     || '—';
+        document.getElementById('sim-filename').textContent   = data.similar_filename || '—';
+        document.getElementById('sim-percent').textContent    = data.similarity       || '—';
+        document.getElementById('sim-orig-hash').textContent  = (data.original_hash||'').slice(0,32)+'...';
+        // ⛔ Disable confirm button — cannot register similar image!
+        if (regBtn) {
+          regBtn.disabled = true;
+          regBtn.classList.remove('bg-primary','shadow-neon');
+          regBtn.classList.add('bg-white/5','cursor-not-allowed','opacity-50');
+          document.getElementById('reg-btn-icon').textContent = 'block';
+          document.getElementById('reg-btn-text').textContent = 'Blocked — Similar Image Exists';
+        }
+      } else if (simBox) {
+        simBox.classList.add('hidden');
+        // ✅ Enable confirm button — no similar image found
+        if (regBtn) {
+          regBtn.disabled = false;
+          regBtn.classList.add('bg-primary','shadow-neon');
+          regBtn.classList.remove('bg-white/5','cursor-not-allowed','opacity-50');
+          document.getElementById('reg-btn-icon').textContent = 'link';
+          document.getElementById('reg-btn-text').textContent = 'Confirm & Store on Blockchain';
+        }
+      }
+
+      setTimeout(() => goToStep(2), 800);
+    } else {
+      showTempError('❌ Could not generate hash. Check backend!');
+    }
+  } catch(e) {
+    showTempError('❌ Connection Error — make sure app.py is running on port 5000.');
+  }
+  setLoading('gen-btn','gen-btn-icon','gen-btn-text',false,'Generate Hash Preview','fingerprint');
+}
+
+function showTempError(msg) {
+  const el = document.createElement('div');
+  el.className = 'rounded-xl border border-red-500/30 bg-red-500/5 p-3 text-red-400 text-xs font-bold fade-in';
+  el.textContent = msg;
+  document.getElementById('step1-section').appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+function goToStep(step) {
+  if (step === 2) {
+    document.getElementById('step1-section').classList.add('hidden');
+    document.getElementById('step2-section').classList.remove('hidden');
+    document.getElementById('step2-section').classList.add('flex');
+    document.getElementById('step-dot-1').className = 'flex size-7 items-center justify-center rounded-full bg-green-500 text-white text-xs font-bold';
+    document.getElementById('step-dot-1').textContent = '✓';
+    document.getElementById('step-dot-2').className = 'flex size-7 items-center justify-center rounded-full bg-primary text-white text-xs font-bold';
+    document.getElementById('step-indicator-2').classList.remove('opacity-40');
+    document.getElementById('step-label-2').className = 'text-white text-xs font-bold';
+  } else {
+    document.getElementById('step1-section').classList.remove('hidden');
+    document.getElementById('step2-section').classList.add('hidden');
+    document.getElementById('step2-section').classList.remove('flex');
+    document.getElementById('step-dot-1').className = 'flex size-7 items-center justify-center rounded-full bg-primary text-white text-xs font-bold';
+    document.getElementById('step-dot-1').textContent = '1';
+    document.getElementById('step-dot-2').className = 'flex size-7 items-center justify-center rounded-full bg-white/10 text-white text-xs font-bold';
+    document.getElementById('step-indicator-2').classList.add('opacity-40');
+    document.getElementById('step-label-2').className = 'text-slate-400 text-xs font-bold';
+  }
+}
+
+function resetRegister() {
+  pendingHash = null;
+  document.getElementById('reg-file').value = '';
+  document.getElementById('reg-creator').value = '';
+  const fn = document.getElementById('reg-filename');
+  if (fn) fn.classList.add('hidden');
+  const rz = document.getElementById('reg-zone');
+  if (rz) rz.style.borderColor = '';
+  const rr = document.getElementById('reg-result');
+  if (rr) { rr.classList.add('hidden'); rr.innerHTML = ''; }
+  goToStep(1);
+}
+
+// ── REGISTER — STEP 2 ─────────────────────────────────────
+async function registerContent() {
+  if (!pendingHash) return;
+  const { file, creator, type, hash } = pendingHash;
+  setLoading('reg-btn','reg-btn-icon','reg-btn-text',true,'Storing on Blockchain...','link');
+  try {
+    const fd = new FormData();
+    fd.append('file',     file);
+    fd.append('creator',  creator);
+    fd.append('type',     type);
+    fd.append('username', currentUser.username || '');  // send username for exact matching
+    const res  = await fetch(`${API}/register`, { method:'POST', body:fd });
+    const data = await res.json();
+    if (data.hash) {
+      const already = data.already || (data.message && data.message.toLowerCase().includes('already'));
+      if (already) {
+        // Show original owner details
+        const isAI = data.orig_type === 'AI';
+        showResult('reg-result', 'warning', `
+          <div class="flex items-center gap-2 mb-3">
+            <span class="material-symbols-outlined text-amber-400 text-xl">gavel</span>
+            <p class="font-bold text-sm text-amber-300">File Already Owned on Blockchain!</p>
+          </div>
+          <div class="rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 mb-3">
+            <p class="text-amber-200/70 text-[10px] font-bold uppercase tracking-wider mb-2">Original Owner</p>
+            <div class="flex items-center gap-3">
+              <div class="size-10 rounded-xl bg-primary/20 flex items-center justify-center border border-primary/30">
+                <span class="text-primary font-bold text-lg">${(data.orig_creator||'?').charAt(0).toUpperCase()}</span>
+              </div>
+              <div>
+                <p class="text-white font-bold text-sm">${data.orig_creator || 'Unknown'}</p>
+                <p class="text-slate-400 text-xs">Registered on ${data.orig_date || 'Unknown date'}</p>
+              </div>
+            </div>
+          </div>
+          ${infoRow('File', file.name)}
+          ${infoRow('Type', isAI ? '🤖 AI Generated' : '👤 Human Created')}
+          <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-3 mb-1">SHA-256 Fingerprint</p>
+          <p class="hash-text text-amber-400/80 bg-black/30 rounded-lg px-3 py-2">${data.hash}</p>
+          <div class="mt-3 rounded-lg border border-red-500/20 bg-red-500/5 p-2">
+            <p class="text-red-400 text-[10px] font-bold text-center">⛔ You cannot claim ownership of this file!</p>
+          </div>
+        `);
+      } else {
+        // Success — new registration
+        showResult('reg-result', 'success', `
+          <p class="font-bold text-sm mb-3">✅ Stored on Blockchain!</p>
+          ${infoRow('File', file.name)}
+          ${infoRow('Creator', creator)}
+          ${infoRow('Type', type==='AI' ? '🤖 AI Generated' : '👤 Human Created')}
+          <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-3 mb-1">SHA-256 Fingerprint</p>
+          <p class="hash-text text-primary/80 bg-black/30 rounded-lg px-3 py-2">${data.hash}</p>
+          ${data.tx ? `
+          <div class="flex gap-2 mt-3 flex-wrap">
+            <a href="https://sepolia.etherscan.io/tx/${data.tx}" target="_blank"
+              class="flex items-center gap-1 text-primary text-xs font-bold hover:underline">
+              <span class="material-symbols-outlined text-sm">open_in_new</span> Etherscan ↗
+            </a>
+            <button onclick="showQR('${data.hash}')"
+              class="flex items-center gap-1 text-amber-400 text-xs font-bold hover:underline">
+              <span class="material-symbols-outlined text-sm">qr_code</span> QR Code
+            </button>
+            <button onclick="downloadCert('${file.name}','${creator}','${type}','${data.tx}','${data.hash}')"
+              class="flex items-center gap-1 text-green-400 text-xs font-bold hover:underline">
+              <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Certificate
+            </button>
+          </div>` : ''}
+        `);
+        if (type==='human') sessionStats.human++; else sessionStats.ai++;
+        addActivity(file.name, type, data.hash);
+        launchConfetti();
+      }
+    }
+  } catch(e) {
+    showResult('reg-result','error','<p class="text-red-400 text-sm font-bold">❌ Connection Error — is app.py running?</p>');
+  }
+  setLoading('reg-btn','reg-btn-icon','reg-btn-text',false,'Confirm & Store on Blockchain','link');
+}
+
+// ── VERIFY TAB SWITCH ─────────────────────────────────────
+function switchVerifyTab(tab) {
+  const fileTab = document.getElementById('verify-tab-file');
+  const hashTab = document.getElementById('verify-tab-hash');
+  const btnFile = document.getElementById('tab-file');
+  const btnHash = document.getElementById('tab-hash');
+  document.getElementById('ver-result').classList.add('hidden');
+
+  if (tab === 'file') {
+    fileTab.classList.remove('hidden'); fileTab.classList.add('flex');
+    hashTab.classList.add('hidden');   hashTab.classList.remove('flex');
+    btnFile.className = 'flex-1 flex items-center justify-center gap-2 rounded-lg h-10 text-xs font-bold bg-primary text-white transition-all';
+    btnHash.className = 'flex-1 flex items-center justify-center gap-2 rounded-lg h-10 text-xs font-bold text-slate-400 transition-all';
+  } else {
+    hashTab.classList.remove('hidden'); hashTab.classList.add('flex');
+    fileTab.classList.add('hidden');    fileTab.classList.remove('flex');
+    btnHash.className = 'flex-1 flex items-center justify-center gap-2 rounded-lg h-10 text-xs font-bold bg-primary text-white transition-all';
+    btnFile.className = 'flex-1 flex items-center justify-center gap-2 rounded-lg h-10 text-xs font-bold text-slate-400 transition-all';
+    loadMyHashes();
+  }
+}
+
+// Load current user's registered hashes for quick select
+function loadMyHashes() {
+  const key     = 'poo-activity-' + (currentUser.username || 'guest');
+  const saved   = localStorage.getItem(key);
+  const section = document.getElementById('my-hashes-section');
+  const list    = document.getElementById('my-hashes-list');
+  if (!saved || !section || !list) return;
+
+  const files = JSON.parse(saved);
+  if (files.length === 0) return;
+
+  section.classList.remove('hidden');
+  list.innerHTML = files.slice(0,5).map(f => `
+    <button onclick="document.getElementById('ver-hash-input').value='${f.hash.replace('...','') }'; showToast('Hash pasted! ✅')"
+      class="flex items-center gap-3 rounded-xl border border-white/5 bg-surface/30 p-3 text-left hover:border-primary/30 transition-all">
+      <div class="size-8 rounded-lg flex items-center justify-center ${f.type==='AI' ? 'bg-purple-500/20' : 'bg-green-500/20'} flex-shrink-0">
+        <span class="material-symbols-outlined text-sm ${f.type==='AI' ? 'text-purple-400' : 'text-green-400'}">${f.type==='AI' ? 'smart_toy' : 'person_check'}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-white text-xs font-bold truncate">${f.name}</p>
+        <p class="text-slate-500 text-[10px] font-mono">${f.hash}</p>
+      </div>
+      <span class="material-symbols-outlined text-slate-500 text-sm">content_paste</span>
+    </button>`).join('');
+}
+
+// ── VERIFY BY FILE ─────────────────────────────────────────
+async function verifyContent() {
+  const file = document.getElementById('ver-file').files[0];
+  if (!file) return showResult('ver-result','error','<p class="text-red-400 text-sm font-bold">⚠ Select a file first.</p>');
+  setLoading('ver-btn','ver-btn-icon','ver-btn-text',true,'Checking Blockchain...','verified');
+  try {
+    const fd = new FormData(); fd.append('file', file);
+    const res  = await fetch(`${API}/verify`, { method:'POST', body:fd });
+    const data = await res.json();
+    showVerifyResult(data, file.name);
+  } catch(e) {
+    showResult('ver-result','error','<p class="text-red-400 text-sm font-bold">❌ Connection Error — is app.py running?</p>');
+  }
+  setLoading('ver-btn','ver-btn-icon','ver-btn-text',false,'Check on Blockchain','verified');
+}
+
+// ── VERIFY BY HASH ─────────────────────────────────────────
+async function verifyByHash() {
+  const hash = document.getElementById('ver-hash-input').value.trim();
+  if (!hash || hash.length < 10) {
+    return showResult('ver-result','error','<p class="text-red-400 text-sm font-bold">⚠ Please enter a valid SHA-256 hash.</p>');
+  }
+  setLoading(null,'hash-btn-icon','hash-btn-text',true,'Checking...','verified');
+  try {
+    const res  = await fetch(`${API}/verify-hash`, {
+      method : 'POST',
+      headers: {'Content-Type':'application/json'},
+      body   : JSON.stringify({ hash })
+    });
+    const data = await res.json();
+    showVerifyResult(data, 'Hash lookup');
+  } catch(e) {
+    showResult('ver-result','error','<p class="text-red-400 text-sm font-bold">❌ Connection Error.</p>');
+  }
+  setLoading(null,'hash-btn-icon','hash-btn-text',false,'Verify Hash','verified');
+}
+
+// ── SHARED VERIFY RESULT RENDERER ─────────────────────────
+function showVerifyResult(data, filename) {
+  if (data.verified) {
+    const date = data.timestamp ? new Date(data.timestamp*1000).toLocaleString('en-IN') : '—';
+    const isAI = data.type === 'AI';
+    showResult('ver-result','success', `
+      <div class="flex items-center gap-2 mb-3">
+        <span class="material-symbols-outlined text-green-400 text-xl" style="font-variation-settings:'FILL' 1;">verified</span>
+        <p class="font-bold text-sm text-green-400">✅ Verified on Blockchain!</p>
+      </div>
+      ${infoRow('File', filename)}
+      ${infoRow('Owner', data.creator || '—')}
+      ${infoRow('Type', isAI ? '🤖 AI Generated' : '👤 Human Created')}
+      ${infoRow('Registered', date)}
+      <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mt-3 mb-1">SHA-256 Hash</p>
+      <p class="hash-text text-primary/80 bg-black/30 rounded-lg px-3 py-2 break-all">${data.hash}</p>
+      <div class="flex gap-3 mt-3 flex-wrap">
+        <button onclick="showQR('${data.hash}')"
+          class="flex items-center gap-1 text-amber-400 text-xs font-bold hover:underline">
+          <span class="material-symbols-outlined text-sm">qr_code</span> QR Code
+        </button>
+        <button onclick="downloadCert('${filename}','${data.creator}','${data.type}','','${data.hash}')"
+          class="flex items-center gap-1 text-green-400 text-xs font-bold hover:underline">
+          <span class="material-symbols-outlined text-sm">picture_as_pdf</span> Certificate
+        </button>
+      </div>
+    `);
+  } else {
+    showResult('ver-result','error', `
+      <div class="flex items-center gap-2 mb-3">
+        <span class="material-symbols-outlined text-red-400 text-xl" style="font-variation-settings:'FILL' 1;">policy</span>
+        <p class="font-bold text-sm text-red-400">❌ Not Found on Blockchain</p>
+      </div>
+      <div class="rounded-xl border border-red-500/20 bg-red-500/5 p-3 mb-3">
+        <p class="text-slate-300 text-xs font-bold mb-2">Two possible reasons:</p>
+        <div class="flex flex-col gap-2">
+          <div class="flex items-start gap-2">
+            <span class="h-1.5 w-1.5 rounded-full bg-red-400 flex-shrink-0 mt-1.5"></span>
+            <p class="text-slate-400 text-xs"><strong class="text-red-300">File was modified/tampered</strong> — even 1 byte change gives a different hash</p>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="h-1.5 w-1.5 rounded-full bg-amber-400 flex-shrink-0 mt-1.5"></span>
+            <p class="text-slate-400 text-xs"><strong class="text-amber-300">File was never registered</strong> on blockchain</p>
+          </div>
+        </div>
+      </div>
+      <p class="text-slate-500 text-[10px] font-bold uppercase tracking-wider mb-1">SHA-256 of This File</p>
+      <p class="hash-text text-red-400/70 bg-black/30 rounded-lg px-3 py-2 break-all">${data.hash}</p>
+      <div class="mt-3 rounded-lg bg-primary/5 border border-primary/20 p-3">
+        <p class="text-primary text-[10px] font-bold mb-1">💡 Tip: Use "Enter Hash" tab</p>
+        <p class="text-slate-400 text-[10px]">If you registered this file, copy its hash from your registration result and verify by hash instead.</p>
+      </div>
+    `);
+  }
+}
+
+// ── QR CODE ───────────────────────────────────────────────
+function showQR(hash) {
+  const existing = document.getElementById('qr-modal');
+  if (existing) existing.remove();
+  const modal = document.createElement('div');
+  modal.id = 'qr-modal';
+  modal.className = 'fixed inset-0 z-[999] flex items-center justify-center bg-black/70 backdrop-blur-sm fade-in';
+  modal.innerHTML = `
+    <div class="bg-surface border border-white/10 rounded-2xl p-6 mx-4 flex flex-col items-center gap-4 max-w-xs w-full">
+      <div class="flex items-center justify-between w-full">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-primary text-lg">qr_code_2</span>
+          <p class="text-white font-bold text-sm">QR Code</p>
+        </div>
+        <button onclick="document.getElementById('qr-modal').remove()" class="text-slate-400 hover:text-white transition-colors">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="rounded-xl overflow-hidden border border-white/10 bg-[#0d1218] w-48 h-48 flex items-center justify-center" id="qr-container">
+        <span class="material-symbols-outlined text-slate-600 text-4xl spin">sync</span>
+      </div>
+      <p class="text-slate-400 text-xs text-center">Scan QR to verify this file on any device</p>
+      <p class="hash-text text-primary/70 text-[10px] bg-black/30 rounded-lg px-3 py-2 w-full text-center break-all">${hash.slice(0,32)}...</p>
+      <button onclick="downloadQR('${hash}')"
+        class="flex items-center gap-2 text-xs font-bold text-primary hover:underline">
+        <span class="material-symbols-outlined text-sm">download</span> Save QR Image
+      </button>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+
+  // Load QR image with error handling
+  const img = new Image();
+  img.onload = () => {
+    const container = document.getElementById('qr-container');
+    if (container) {
+      container.innerHTML = '';
+      img.className = 'w-48 h-48 rounded-xl';
+      container.appendChild(img);
+    }
+  };
+  img.onerror = () => {
+    const container = document.getElementById('qr-container');
+    if (container) container.innerHTML = '<p class="text-red-400 text-xs text-center px-3">QR failed.<br/>Run: pip install qrcode[pil]</p>';
+  };
+  img.src = `${API}/qr/${hash}?t=${Date.now()}`;
+}
+
+async function downloadQR(hash) {
+  try {
+    const res  = await fetch(`${API}/qr/${hash}`);
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `qr_${hash.slice(0,8)}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch(e) {
+    showToast('❌ Could not download QR');
+  }
+}
+
+// ── PDF CERTIFICATE ───────────────────────────────────────
+async function downloadCert(filename, creator, type, tx, hash) {
+  showToast('Generating certificate... 📄');
+  try {
+    const res = await fetch(`${API}/certificate`, {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body   : JSON.stringify({
+        filename, creator, type, tx, hash,
+        date: new Date().toLocaleDateString('en-GB',
+          { day:'2-digit', month:'long', year:'numeric' })
+      })
+    });
+
+    // Check if response is ok
+    if (!res.ok) {
+      const err = await res.json();
+      showToast('❌ ' + (err.error || 'PDF generation failed'));
+      return;
+    }
+
+    // Check content type
+    const contentType = res.headers.get('content-type');
+    if (!contentType || !contentType.includes('pdf')) {
+      const err = await res.json().catch(() => ({}));
+      showToast('❌ ' + (err.error || 'Run: pip install reportlab'));
+      return;
+    }
+
+    const blob     = await res.blob();
+    const pdfBlob  = new Blob([blob], { type: 'application/pdf' });
+    const url      = URL.createObjectURL(pdfBlob);
+    const a        = document.createElement('a');
+    a.href         = url;
+    a.download     = `ProofOfOrigin_Certificate_${hash.slice(0,8)}.pdf`;
+    a.target       = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    showToast('Certificate downloaded! ✅');
+  } catch(e) {
+    showToast('❌ Certificate error: ' + e.message);
+  }
+}
+
+// ── ACTIVITY ──────────────────────────────────────────────
+function addActivity(name, type, hash) {
+  const entry = { name, type, hash: hash.slice(0,12)+'...', time: new Date().toLocaleTimeString() };
+  activityLog.unshift(entry);
+  if (activityLog.length > 10) activityLog.pop();
+  // Save per user — each user has their own activity key
+  const key = 'poo-activity-' + (currentUser.username || 'guest');
+  localStorage.setItem(key, JSON.stringify(activityLog));
+  renderActivity();
+}
+
+function renderActivity() {
+  const el = document.getElementById('activity-list');
+  if (!el) return;
+  if (activityLog.length === 0) {
+    el.innerHTML = '<p class="text-slate-500 text-xs text-center py-4">No activity yet</p>'; return;
+  }
+  el.innerHTML = activityLog.slice(0,5).map(a => `
+    <div class="flex items-center gap-3 py-2 border-b border-white/5 last:border-0">
+      <div class="size-8 rounded-lg flex-shrink-0 flex items-center justify-center ${a.type==='AI' ? 'bg-purple-500/15' : 'bg-green-500/15'}">
+        <span class="material-symbols-outlined text-sm ${a.type==='AI' ? 'text-purple-400' : 'text-green-400'}">${a.type==='AI' ? 'smart_toy' : 'person_check'}</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-white text-xs font-medium truncate">${a.name}</p>
+        <p class="text-slate-500 text-[10px]">${a.hash} · ${a.time}</p>
+      </div>
+      <span class="text-[10px] font-bold ${a.type==='AI' ? 'text-purple-400' : 'text-green-400'}">${a.type}</span>
+    </div>`).join('');
+}
+
+function loadActivityFromStorage() {
+  // Load only THIS user's activity
+  const key   = 'poo-activity-' + (currentUser.username || 'guest');
+  const saved = localStorage.getItem(key);
+  activityLog = saved ? JSON.parse(saved) : [];
+  renderActivity();
+}
+
+// ── HELPERS ───────────────────────────────────────────────
+function setLoading(btnId, iconId, textId, loading, defaultText, defaultIcon) {
+  const btn  = document.getElementById(btnId);
+  const icon = document.getElementById(iconId);
+  const text = document.getElementById(textId);
+  if (!btn) return;
+  btn.disabled = loading;
+  if (icon) { icon.textContent = loading ? 'sync' : defaultIcon;
+               icon.classList.toggle('spin', loading); }
+  if (text)   text.textContent = loading ? '...' : defaultText;
+}
+
+function showResult(id, type, html) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const colors = { success:'border-green-500/20 bg-green-500/5',
+                   warning:'border-amber-500/20 bg-amber-500/5',
+                   error  :'border-red-500/20   bg-red-500/5' };
+  el.className = `rounded-xl border p-4 fade-in ${colors[type]||colors.error}`;
+  el.innerHTML = html;
+  el.classList.remove('hidden');
+}
+
+function infoRow(label, value) {
+  return `<div class="flex justify-between items-center py-1.5 border-b border-white/5">
+    <span class="text-slate-500 text-[10px] font-bold uppercase tracking-wider">${label}</span>
+    <span class="text-white text-xs font-medium">${value}</span>
+  </div>`;
+}
+
+loadActivityFromStorage();
+</script>
+</body>
+</html>
