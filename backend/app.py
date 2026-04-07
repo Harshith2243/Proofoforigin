@@ -4,9 +4,9 @@ import hashlib, json, os, re, io, random, string, time
 from datetime import datetime
 from dotenv import load_dotenv
 from web3 import Web3
-from flask import Flask, request, jsonify, send_file
-from flask_cors import CORS
-from dotenv import load_dotenv
+ 
+ 
+ 
 
 load_dotenv()
 
@@ -26,7 +26,7 @@ CONTRACT_ADDRESS = os.getenv("CONTRACT_ADDRESS")
 PRIVATE_KEY      = os.getenv("PRIVATE_KEY")
 ACCOUNT          = w3.eth.account.from_key(PRIVATE_KEY)
 
-with open("abi.json") as f:
+with open(os.path.join(os.path.dirname(__file__), "abi.json")) as f:
     abi = json.load(f)
 
 contract = w3.eth.contract(
