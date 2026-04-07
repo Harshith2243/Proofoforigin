@@ -4,7 +4,15 @@ import hashlib, json, os, re, io, random, string, time
 from datetime import datetime
 from dotenv import load_dotenv
 from web3 import Web3
+from flask import Flask
+from flask_cors import CORS
 
+app = Flask(__name__)
+CORS(app)
+
+@app.route("/")
+def home():
+    return "Backend Running ✅"
 load_dotenv()
 
 app  = Flask(__name__)
