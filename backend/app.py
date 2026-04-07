@@ -221,18 +221,15 @@ def login():
     if not user or user["password"] != hash_password(password):
         return jsonify({"success": False, "message": "Invalid username or password!"})
 
-    # Send OTP
-    otp = "".join(random.choices(string.digits, k=6))
-    otp_store[user["email"]] = {"otp": otp, "expires": time.time() + 300}
-    try:
-        send_otp_email(user["email"], otp, user["name"])
-        return jsonify({"success": True,
-                        "message": f"OTP sent to {user['email']}!",
-                        "email"  : user["email"],
-                        "name"   : user["name"]})
-    except Exception as e:
-        return jsonify({"success": False, "message": f"Email error: {str(e)}"})
-
+    # Direct login — no OTP needed
+    return jsonify({
+        "success" : True,
+        "message" : "Login successful!",
+        "name"    : user["name"],
+        "username": username,
+        "email"   : user["email"],
+        "joined"  : user.get("joined", "—")
+    })
 
 @app.route("/verify-login-otp", methods=["POST"])
 def verify_login_otp():
@@ -269,24 +266,22 @@ def get_profile(username):
     if not user:
         return jsonify({"success": False, "message": "User not found!"})
 
-    # Count their blockchain registrations
-    try:
-        events = contract.events.ContentRegistered.create_filter(
-            from_block=0).get_all_entries()
-        my_files = [e for e in events
-                    if e['args'].get('creator','').lower() == user['name'].lower()]
-        total    = len(my_files)
-        recent   = [{"hash": e['args'].get('contentHash','')[:16]+"...",
-                     "type": e['args'].get('contentType',''),
-                     "time": datetime.fromtimestamp(
-                         e['args'].get('time',0)).strftime("%d %b %Y")}
-                    for e in my_files[-5:]]
-    except:
-        total  = 0
-        recent = []
+    # Use users.json registered_files — accurate filenames!
+    my_files = user.get("registered_files", [])
+    total    = len(my_files)
+
+    # Build recent with filename
+    recent = []
+    for f in reversed(my_files[-5:]):
+        recent.append({
+            "hash"    : f.get("hash", "")[:16] + "...",
+            "type"    : f.get("type", "—"),
+            "filename": f.get("filename", f.get("file", "Unknown File")),
+            "date"    : f.get("date", "—")
+        })
 
     return jsonify({"success": True, "name": user["name"],
-                    "email": user["email"], "joined": user["joined"],
+                    "email": user["email"], "joined": user.get("joined","—"),
                     "total_registered": total, "recent": recent})
 
 
@@ -770,6 +765,122 @@ def get_user_stats(username):
     except Exception as e:
         print("User stats error:", str(e))
         return jsonify({"human":0,"ai":0,"total":0,"recent":[],"error":str(e)})
+
+# ══════════════════════════════════════════════════════════
+#   ADMIN ROUTES
+# ══════════════════════════════════════════════════════════
+
+@app.route("/admin/users", methods=["GET"])
+def admin_get_users():
+    """Return all users with their registration data"""
+    try:
+        users = load_users()
+        users_list = []
+        for username, user in users.items():
+            users_list.append({
+                "username"        : username,
+                "name"            : user.get("name",""),
+                "email"           : user.get("email",""),
+                "joined"          : user.get("joined",""),
+                "blocked"         : user.get("blocked", False),
+                "registered_files": user.get("registered_files",[])
+            })
+        return jsonify({"success": True, "users": users_list, "total": len(users_list)})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e), "users": []})
+
+
+@app.route("/admin/blockchain", methods=["GET"])
+def admin_get_blockchain():
+    """Return all blockchain records"""
+    try:
+        events  = contract.events.ContentRegistered.create_filter(from_block=0).get_all_entries()
+        records = []
+        for e in events:
+            ts = e['args'].get('time', 0)
+            records.append({
+                "hash"   : e['args'].get('contentHash',''),
+                "creator": e['args'].get('creator',''),
+                "type"   : e['args'].get('contentType',''),
+                "date"   : datetime.fromtimestamp(ts).strftime("%d %b %Y, %I:%M %p") if ts else "—",
+                "tx"     : e.transactionHash.hex() if hasattr(e,'transactionHash') else ""
+            })
+        return jsonify({"success": True, "records": records, "total": len(records)})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e), "records": []})
+
+
+@app.route("/admin/alerts", methods=["GET"])
+def admin_get_alerts():
+    """Detect suspicious activity — high AI uploads, duplicates"""
+    try:
+        users   = load_users()
+        alerts  = []
+
+        for username, user in users.items():
+            files = user.get("registered_files", [])
+            total = len(files)
+            if total == 0:
+                continue
+
+            # Alert: More than 80% AI content
+            ai_count = sum(1 for f in files if f.get("type","") == "AI")
+            if total >= 3 and ai_count / total >= 0.8:
+                alerts.append({
+                    "type"    : "High AI Content",
+                    "message" : f"{user.get('name')} has {ai_count}/{total} files flagged as AI-generated.",
+                    "user"    : user.get("email",""),
+                    "date"    : files[-1].get("date","—") if files else "—",
+                    "severity": "HIGH"
+                })
+
+            # Alert: Rapid uploads (more than 10 files)
+            if total > 10:
+                alerts.append({
+                    "type"    : "Excessive Uploads",
+                    "message" : f"{user.get('name')} has uploaded {total} files.",
+                    "user"    : user.get("email",""),
+                    "date"    : files[-1].get("date","—") if files else "—",
+                    "severity": "MEDIUM"
+                })
+
+        # Alert: pHash similarity attempts
+        phash_db = load_phash_db()
+        if len(phash_db) > 0:
+            creators = [e.get("creator","") for e in phash_db]
+            from collections import Counter
+            counts = Counter(creators)
+            for creator, count in counts.items():
+                if count > 5:
+                    alerts.append({
+                        "type"    : "Similar Image Pattern",
+                        "message" : f"{creator} has {count} visually similar images in the system.",
+                        "user"    : creator,
+                        "date"    : "—",
+                        "severity": "LOW"
+                    })
+
+        return jsonify({"success": True, "alerts": alerts, "total": len(alerts)})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e), "alerts": []})
+
+
+@app.route("/admin/block-user", methods=["POST"])
+def admin_block_user():
+    """Block or unblock a user"""
+    try:
+        data     = request.json
+        username = data.get("username","").strip().lower()
+        action   = data.get("action","block")
+        users    = load_users()
+        if username not in users:
+            return jsonify({"success": False, "message": "User not found"})
+        users[username]["blocked"] = (action == "block")
+        save_users(users)
+        return jsonify({"success": True, "message": f"User {action}ed successfully"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
