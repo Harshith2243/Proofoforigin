@@ -1384,7 +1384,10 @@ async function loadProfile() {
         </div>`).join('');}
       else{recEl.innerHTML='<div class="text-center p-6 text-slate-500">No registrations yet</div>';}
     }
-  } catch(e){document.getElementById('profile-total').textContent='—';}
+  } catch(e){
+    console.error('Profile load error:', e);
+    document.getElementById('profile-total').textContent='—';
+  }
 }
 
 async function changePassword() {
@@ -1405,7 +1408,9 @@ async function loadStats() {
     animateStat('stat-human',data.human);animateStat('stat-ai',data.ai);animateStat('stat-total',data.total);
     updatePieChart(data.human,data.ai);sessionStats.human=data.human;sessionStats.ai=data.ai;
     if(statusEl){statusEl.textContent=data.total===0?'No registrations yet':'Your registrations · Sepolia ✓';statusEl.style.color='#22c55e';}
+    if(statusEl){statusEl.textContent='Session count only';statusEl.style.color='#f59e0b';}
   } catch(e){
+    console.error('Stats load error:', e);
     animateStat('stat-human',sessionStats.human);animateStat('stat-ai',sessionStats.ai);animateStat('stat-total',sessionStats.human+sessionStats.ai);
     updatePieChart(sessionStats.human,sessionStats.ai);
     if(statusEl){statusEl.textContent='Session count only';statusEl.style.color='#f59e0b';}
@@ -1476,7 +1481,10 @@ async function generateHashPreview(){
       }
       setTimeout(()=>goToStep(2),700);
     }else{showTempError('❌ Hash generation failed');}
-  }catch(e){showTempError('❌ Connection error — run app.py');}
+  }catch(e){
+    console.error('Hash preview error:', e);
+    showTempError('❌ Connection error — run app.py');
+  }
   setLoading('gen-btn','gen-btn-icon','gen-btn-text',false,'Generate Hash Preview','fingerprint');
 }
 
@@ -1564,7 +1572,10 @@ async function registerContent(){
         addActivity(file.name,type,data.hash);launchConfetti();
       }
     }
-  }catch(e){showResult('reg-result','error','<p style="color:#f87171;font-weight:700;">❌ Connection Error — is app.py running?</p>');}
+  }catch(e){
+    console.error('Registration error:', e);
+    showResult('reg-result','error','<p style="color:#f87171;font-weight:700;">❌ Connection Error — is app.py running?</p>');
+  }
   setLoading('reg-btn','reg-btn-icon','reg-btn-text',false,'Confirm & Store on Blockchain','link');
 }
 
@@ -1604,7 +1615,10 @@ async function verifyContent(){
   if(!file)return showResult('ver-result','error','<p style="color:#f87171;font-weight:700;">⚠ Select a file first</p>');
   setLoading('ver-btn','ver-btn-icon','ver-btn-text',true,'Querying Blockchain...','verified');
   try{const fd=new FormData();fd.append('file',file);const res=await fetch(`${API}/verify`,{method:'POST',body:fd});const data=await res.json();showVerifyResult(data,file.name);}
-  catch(e){showResult('ver-result','error','<p style="color:#f87171;font-weight:700;">❌ Connection Error</p>');}
+  catch(e){
+    console.error('Verify error:', e);
+    showResult('ver-result','error','<p style="color:#f87171;font-weight:700;">❌ Connection Error</p>');
+  }
   setLoading('ver-btn','ver-btn-icon','ver-btn-text',false,'Check on Blockchain','verified');
 }
 
