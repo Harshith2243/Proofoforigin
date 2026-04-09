@@ -11,7 +11,7 @@ from web3 import Web3
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=["*"], supports_credentials=True)
 
 @app.route("/")
 def home():
@@ -34,7 +34,13 @@ contract = w3.eth.contract(
 
 # ── Users DB (JSON file) ───────────────────────────────────
 USERS_FILE = "users.json"
+import os
+USERS_FILE = os.path.join(os.path.dirname(__file__), "users.json")
 
+# Auto-create if missing
+if not os.path.exists(USERS_FILE):
+    with open(USERS_FILE, "w") as f:
+        json.dump({}, f)
 def load_users():
     if not os.path.exists(USERS_FILE):
         return {}
