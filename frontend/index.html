@@ -992,7 +992,8 @@ input[type="password"] {
 </div><!-- end z-10 -->
 
 <script>
-const API = 'https://proofoforigin-backend.onrender.com';
+  const API = "https://proofoforigin-backend.onrender.com";
+ 
 let activityLog  = [];
 let sessionStats = { human: 0, ai: 0 };
 let currentUser  = { name:'', username:'', email:'', joined:'' };
@@ -1183,6 +1184,73 @@ function detectLoginType() {
 }
 
 async function attemptLogin() {
+ async function attemptLogin() {
+  const username = document.getElementById('login-username').value.trim().toLowerCase();
+  const password = document.getElementById('login-password').value;
+  const errEl    = document.getElementById('login-error');
+  const errMsg   = document.getElementById('login-error-msg');
+
+  if (!username || !password) {
+    errMsg.textContent = 'Enter username and password';
+    errEl.classList.remove('hidden');
+    return;
+  }
+
+  // ADMIN LOGIN
+  if (username === ADMIN_CREDS.username) {
+    if (password === ADMIN_CREDS.password) {
+      errEl.classList.add('hidden');
+      sessionStorage.setItem('poo-admin', 'true');
+      showToast('Welcome, Admin! 🔐');
+      goTo('admin');
+      showAdminTab('overview');
+      loadAdminOverview();
+    } else {
+      errMsg.textContent = 'Incorrect admin password!';
+      errEl.classList.remove('hidden');
+    }
+    return;
+  }
+
+  // USER LOGIN
+  setLoading('login-btn','login-btn-icon','login-btn-text',true,'Signing in...','lock_open');
+
+  try {
+    const res = await fetch(`${API}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      errEl.classList.add('hidden');
+
+      currentUser = {
+        name: data.name,
+        username: data.username,
+        email: data.email,
+        joined: data.joined
+      };
+
+      sessionStorage.setItem('poo-user', JSON.stringify(currentUser));
+      updateUserUI();
+      resetUserSession();
+      goTo('splash');
+
+    } else {
+      errMsg.textContent = data.message || 'Invalid credentials';
+      errEl.classList.remove('hidden');
+    }
+
+  } catch (e) {
+    errMsg.textContent = 'Server error or backend not running';
+    errEl.classList.remove('hidden');
+  }
+
+  setLoading('login-btn','login-btn-icon','login-btn-text',false,'Sign In','lock_open');
+}
   const username = document.getElementById('login-username').value.trim().toLowerCase();
   const password = document.getElementById('login-password').value;
   const errEl    = document.getElementById('login-error');
@@ -1846,5 +1914,6 @@ loadActivityFromStorage();
 
 // Admin access: just type "admin" as username on the login page
 </script>
+ 
 </body>
 </html>
