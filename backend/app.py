@@ -11,10 +11,17 @@ from web3 import Web3
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["*"], supports_credentials=True)
+# Simplified CORS: allow all origins, remove supports_credentials
+CORS(app, origins="*")
+
+# Required environment variables for full functionality
+REQUIRED_VARS = ["SEPOLIA_RPC_URL", "PRIVATE_KEY", "CONTRACT_ADDRESS", "GMAIL_ADDRESS", "GMAIL_APP_PASSWORD"]
 
 @app.route("/")
 def home():
+    missing = [v for v in REQUIRED_VARS if not os.getenv(v)]
+    if missing:
+        return f"⚠️ Backend running but missing variables: {', '.join(missing)}", 200
     return "Backend Running ✅"
  
 

@@ -1245,6 +1245,7 @@ async function attemptLogin() {
     }
 
   } catch (e) {
+    console.error('Login error:', e);
     errMsg.textContent = 'Server error or backend not running';
     errEl.classList.remove('hidden');
   }
@@ -1294,6 +1295,7 @@ async function attemptLogin() {
       document.getElementById('login-password').value = '';
     }
   } catch(e) {
+    console.error('Login check error:', e);
     errMsg.textContent = 'Cannot connect — is app.py running?';
     errEl.classList.remove('hidden');
   }
@@ -1312,7 +1314,10 @@ async function doSignup() {
     const data=await res.json();
     if(data.success){errEl.classList.add('hidden');otpContext='signup';otpEmail=email;document.getElementById('otp-email-display').textContent=email;clearOtpBoxes();document.getElementById('otp-error').classList.add('hidden');startOtpTimer();goTo('otp');}
     else{errMsg.textContent=data.message;errEl.classList.remove('hidden');}
-  } catch(e){errMsg.textContent='Connection error';errEl.classList.remove('hidden');}
+  } catch(e){
+    console.error('Signup error:', e);
+    errMsg.textContent='Connection error';errEl.classList.remove('hidden');
+  }
   setLoading('su-btn','su-btn-icon','su-btn-text',false,'Create Account','person_add');
 }
 
