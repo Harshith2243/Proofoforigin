@@ -96,7 +96,24 @@
   /* ── Input ── */
   .inp { background: #0d1218; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: white; font-size: 14px; outline: none; width: 100%; transition: all 0.25s; padding: 0 16px; }
   .inp:focus { border-color: rgba(19,127,236,0.5); box-shadow: 0 0 0 3px rgba(19,127,236,0.08); }
-  .inp::placeholder { color: rgba(148,163,184,0.4); }
+ .inp::placeholder { color: rgba(148,163,184,0.4); }
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #ffffff !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0d1218 inset !important;
+  caret-color: white !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  color: #ffffff !important;
+  background-color: #0d1218 !important;
+}
 
   /* ── Btn ── */
   .btn-primary { background: #137fec; color: white; font-weight: 700; border-radius: 12px; transition: all 0.25s; box-shadow: 0 0 20px rgba(19,127,236,0.25); }
@@ -696,7 +713,7 @@
                   <label class="text-slate-400 text-xs font-bold uppercase tracking-wider mb-2 block">Creator Name</label>
                   <div class="relative">
                     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">person</span>
-                    <input id="reg-creator" type="text" placeholder="Auto-filled from your account" style="background-color: #0d1218;" class="inp h-12 pl-12   "  readonly style="cursor:not-allowed;opacity:0.7;"/>
+                   <input id="reg-creator" type="text" placeholder="Auto-filled from your account" class="inp h-12 pl-12" readonly style="background-color:#0d1218;cursor:not-allowed;opacity:0.7;"/>
                   </div>
                   <p class="text-slate-500 text-xs mt-1.5">Automatically set to your account name</p>
                 </div>
