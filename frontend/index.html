@@ -992,7 +992,8 @@ input[type="password"] {
 </div><!-- end z-10 -->
 
 <script>
-  const API = "https://proofoforigin-backend.onrender.com";
+  const API =  "http://127.0.0.1:5000" ;
+    
  
 let activityLog  = [];
 let sessionStats = { human: 0, ai: 0 };
@@ -1408,7 +1409,6 @@ async function loadStats() {
     animateStat('stat-human',data.human);animateStat('stat-ai',data.ai);animateStat('stat-total',data.total);
     updatePieChart(data.human,data.ai);sessionStats.human=data.human;sessionStats.ai=data.ai;
     if(statusEl){statusEl.textContent=data.total===0?'No registrations yet':'Your registrations · Sepolia ✓';statusEl.style.color='#22c55e';}
-    if(statusEl){statusEl.textContent='Session count only';statusEl.style.color='#f59e0b';}
   } catch(e){
     console.error('Stats load error:', e);
     animateStat('stat-human',sessionStats.human);animateStat('stat-ai',sessionStats.ai);animateStat('stat-total',sessionStats.human+sessionStats.ai);
@@ -1810,8 +1810,17 @@ async function loadAdminOverview(){
 function renderAdminFeed(users){
   const feed=document.getElementById('admin-recent-feed');if(!feed)return;
   let items=[];
-  users.forEach(u=>{(u.registered_files||[]).slice(-3).forEach(f=>{items.push({user:u.name,email:u.email,file:f.file||f.filename||'—',type:f.type,date:f.date||'—'});});});
-  items=items.slice(-10).reverse();
+  users.forEach(u=>{
+    if (u.registered_files && u.registered_files.length > 0) {
+      u.registered_files.slice(-3).forEach(f=>{
+        items.push({user:u.name,email:u.email,file:f.file||f.filename||'—',type:f.type,date:f.date||'—',isSignup:false});
+      });
+    } else {
+      items.push({user:u.name,email:u.email,file:'New Account Created',type:'human',date:u.joined||'—',isSignup:true});
+    }
+  });
+  items.sort((a,b)=>new Date(b.date)-new Date(a.date));
+  items=items.slice(0, 10);
   if(items.length===0){feed.innerHTML='<div class="text-center py-8 text-slate-500">No activity found</div>';return;}
   feed.innerHTML=items.map(item=>`
     <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
@@ -1822,7 +1831,7 @@ function renderAdminFeed(users){
         <p style="font-weight:600;font-size:14px;">${item.user} <span style="color:rgba(148,163,184,0.5);font-size:12px;font-weight:400;">· ${item.email}</span></p>
         <p style="color:rgba(148,163,184,0.5);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.file} · ${item.date}</p>
       </div>
-      <span class="${item.type==='AI'?'badge-ai':'badge-human'}">${item.type}</span>
+      <span class="${item.isSignup ? 'badge-human' : (item.type==='AI'?'badge-ai':'badge-human')}">${item.isSignup ? 'NEW' : item.type}</span>
     </div>`).join('');
 }
 
